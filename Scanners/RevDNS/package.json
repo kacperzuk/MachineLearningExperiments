@@ -1,0 +1,14 @@
+{
+  "name": "revdns-scanner",
+  "version": "1.0.0",
+  "description": "Fetch RevDNS for IP address.",
+  "author": "Jakub Król <jakub.krol@poczta.fm>",
+  "repository": "https://github.com/kacperzuk/machinelearningexperiments",
+  "license": "ISC",
+  "scripts": {
+      "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
