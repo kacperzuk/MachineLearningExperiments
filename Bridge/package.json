@@ -1,0 +1,23 @@
+{
+  "name": "bridge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --harmony --use_strict index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kacperzuk/MachineLearningExperiments.git"
+  },
+  "author": "Kacper Żuk <npm@kacperzuk.pl>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kacperzuk/MachineLearningExperiments/issues"
+  },
+  "homepage": "https://github.com/kacperzuk/MachineLearningExperiments#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "http-proxy": "^1.12.0"
+  }
+}
