@@ -19,7 +19,6 @@ newDict = [] #lista wszystkich whois
 for val in samples:
 	d = {}
 	for j,y in enumerate(val["whois"]):
-		print(j)
 		for i,z in enumerate(y):
 			for key in y[z]:
 				if isinstance(y[z][key],list):
