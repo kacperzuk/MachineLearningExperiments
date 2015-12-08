@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/kacperzuk/machinelearningexperiments#readme",
   "dependencies": {
+    "express": "^4.13.3",
     "whois-json": "^1.0.1"
   }
 }
