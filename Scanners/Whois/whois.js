@@ -7,18 +7,17 @@ app.get("/:url", function(request, response){
 
   var success = {"status":"ok", "whois":"whois"};
   var failure = {"status":"tryagain", "reason":"reason"};
-
   var url = request.params.url;
   whois(url, function(err, result){
 
     if(err){
       failure.reason = err.message;
       response.send(failure);
-    }else{
+    } else{
       success.whois = result;
       response.send(result);
     }
   });
 });
 app.listen(2000);
-console.log("server running on 3000");
+console.log("server running on 2000");
