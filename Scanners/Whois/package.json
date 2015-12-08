@@ -1,0 +1,22 @@
+{
+  "name": "whois",
+  "version": "1.0.0",
+  "description": "",
+  "main": "whois-json.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kacperzuk/machinelearningexperiments.git"
+  },
+  "author": "Jakub Król <jakub.krol@poczta.fm>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kacperzuk/machinelearningexperiments/issues"
+  },
+  "homepage": "https://github.com/kacperzuk/machinelearningexperiments#readme",
+  "dependencies": {
+    "whois-json": "^1.0.1"
+  }
+}
