@@ -9,13 +9,22 @@ app.get("/:url", function(request, response){
   var failure = {"status":"tryagain", "reason":"reason"};
   var url = request.params.url;
   whois(url, function(err, result){
-
     if(err){
       failure.reason = err.message;
       response.send(failure);
     } else{
-      success.whois = result;
-      response.send(result);
+      if(result.error.indexOf("429")>-1){
+        failure.status = "error";
+        failure.reason = result;
+        response.send(failure);
+      }
+      if(result.hasOwnProperty("error")){
+        failure.reason = result;
+        response.send(failure);
+      }else{
+        success.whois = result;
+        response.send(success);
+      }
     }
   });
 });
