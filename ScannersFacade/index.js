@@ -6,14 +6,13 @@ const splof = require("splof")();
 const app = require("express")();
 const bodyParser = require("body-parser");
 
-const hostsManager = url.parse(require("config.json").hostsManagerUrl);
+const hostsManager = url.parse(require("./config.json").hostsManagerUrl);
 hostsManager.method = "POST";
 
 splof
   .strategies([
     (err, res) => {
-      res.on('data', (r) => { console.log(r.toString()); });
-      return false;
+      return !err && res.statusCode === 200;
     }
   ])
   .onRetry((err, res) => {
