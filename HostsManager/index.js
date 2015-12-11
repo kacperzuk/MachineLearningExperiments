@@ -24,7 +24,7 @@ app.post("*", (req, res) => {
   if(host.length === 0) {
     provider.destroyInstance(req.body.host, (err) => {
       if(err) {
-        console.log("Error why destroing instance", req.body.host, err);
+        console.log("Error why destroying instance", req.body.host, err);
       } else {
         delete hosts[req.body.host];
       }
