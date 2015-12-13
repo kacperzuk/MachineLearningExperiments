@@ -8,11 +8,11 @@ app.get("/:url", function(request, response){
   var success = {"status":"ok", "whois":"whois"};
   var failure = {"status":"tryagain", "reason":"reason"};
   var url = request.params.url;
-  whois(url, function(err, result){
-    if(err){
-      failure.reason = err.message;
+  whois(url, {verbose: true}, function(error, result){
+    if(error){
+      failure.reason = error.message;
       response.send(failure);
-    } else if(error.includes("429")){
+    } else if((result.error) && (result.error.includes("429"))){
       failure.status = "error";
       failure.reason = result;	
       response.status(500);
