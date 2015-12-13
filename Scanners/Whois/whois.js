@@ -12,21 +12,21 @@ app.get("/:url", function(request, response){
     if(err){
       failure.reason = err.message;
       response.send(failure);
+    } else if(error.includes("429")){
+      failure.status = "error";
+      failure.reason = result;	
+      response.status(500);
+      response.send(failure);
+    } else if(result.error){
+      failure.reason = result;
+      response.send(failure);
+      response.status(503);
     } else{
-      if(result.error.indexOf("429")>-1){
-        failure.status = "error";
-        failure.reason = result;
-        response.send(failure);
-      }
-      if(result.hasOwnProperty("error")){
-        failure.reason = result;
-        response.send(failure);
-      }else{
-        success.whois = result;
-        response.send(success);
-      }
+      success.whois = result;
+      response.send(success);
     }
+    
   });
 });
-app.listen(2000);
-console.log("server running on 2000");
+app.listen(4001);
+console.log("server running on 4001");
