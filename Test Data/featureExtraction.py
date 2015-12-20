@@ -1,9 +1,13 @@
+# -*- coding: utf8 -*-
 from data import samples
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction import DictVectorizer
+from sklearn.cluster import FeatureAgglomeration
+from sklearn.svm import SVC
+from sklearn import svm
 import numpy as np
 vec = DictVectorizer()
-vectorizer = CountVectorizer(min_df=1)
+vectorizer = CountVectorizer(analyzer='char',ngram_range=(1, 3),min_df=1)
 outputIp = []
 hostnames = []
 ports = [22,25,80,443,8080]#otwarte porty jakie bierzemy pod uwage
@@ -14,7 +18,7 @@ newDict = [] #lista wszystkich whois
 #nowe unikalne klucze towrzne sa :element whoisa - z ( data lub server), inedx elementu whoisa j
 #stary klucz - key
 #przyklad : server0host : "whois.arin.net"
-# jesli jakis element jest tablica np klucz comment, nowa wartość klucza np data0comment to 
+# jesli jakis element jest tablica np klucz comment, nowa wartosc klucza np data0comment to 
 # polaczenie wszyzstkich elementow tej tablicy
 for val in samples:
 	d = {}
@@ -26,9 +30,7 @@ for val in samples:
 				else:
 					d[z + str(j) + key] = y[z][key]
 	newDict.append(d)		
-#transformacja slownika na macierz liczb
-Y = vec.fit_transform(newDict)
-Y = Y.toarray()
+
 
 #stworzenie listy wszystkich hostname'ow
 for x in samples:
@@ -40,11 +42,36 @@ for x in samples:
 #transformacja na macierz liczb
 X = vectorizer.fit_transform(hostnames)
 X = X.toarray()
+
+Z = []
+
+for i,key in enumerate(newDict[0]):
+ result = []
+ for item in newDict:	
+  if key in item.keys():
+   result.append(str(item[key]))
+  else:
+   result.append("")
+
+ T = vectorizer.fit_transform(result)
+ T = T.toarray()
+ if i == 0:
+  for v, g in enumerate(T):
+  	foo = []
+  	foo = g
+  	outputIp.append(foo)
+ else:
+  for v, g in enumerate(T):
+  	foo = []
+  	foo = [n for n in outputIp[v]] + [n for n in g]
+  	outputIp[v] = foo
+	
+
 #stowrzenie macierzy nxm gdzie n -liczba probek m - ilosc feature'ow
 for i,val in enumerate(samples):
-	foo = ([int(y) for y in val["ip"].split(".")])	
-	foo = foo + [n for n in X[i]] + [m for m in Y[i]] + [int(x  in val["ports"]) for x in ports] 
-	outputIp.append(foo)
+	foo = []
+	foo = [n for n in outputIp[i]] +  ([int(y) for y in val["ip"].split(".")])	+ [n for n in X[i]] + [int(x  in val["ports"]) for x in ports] 
+	outputIp[i] = foo
  
-# print(outputIp)
+
 
