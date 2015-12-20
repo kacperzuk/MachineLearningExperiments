@@ -56,7 +56,7 @@ logstream.on('end', () => {
     };
   });
   Promise.all(promises).then(() => {
-    fs.writeFile("data.py", "# -*- coding: utf8 -*-\n\nsamples = "+JSON.stringify(addresses, null, 4).replace("false", "False").replace("null", "None"));
+    fs.writeFile("data.py", "# -*- coding: utf8 -*-\n\nsamples = "+JSON.stringify(addresses, null, 4).replace(/false/g, "False").replace(/null/g, "None").replace(/true/g, "True"));
   }).catch((e) => console.log(e));;
 });
 
