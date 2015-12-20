@@ -1,0 +1,15 @@
+{
+  "name": "nslog2testdata",
+  "version": "1.0.0",
+  "description": "",
+  "main": "nslog2testdata.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "byline": "^4.2.1",
+    "q-io": "^1.13.2"
+  }
+}
