@@ -6,8 +6,11 @@ from sklearn.cluster import FeatureAgglomeration
 from sklearn.svm import SVC
 from sklearn import svm
 import numpy as np
+from sklearn.feature_extraction.text import HashingVectorizer
+
 vec = DictVectorizer()
-vectorizer = CountVectorizer(analyzer='char',ngram_range=(1, 3),min_df=1)
+#vectorizer = CountVectorizer(analyzer='char',ngram_range=(1, 3),min_df=1)
+vectorizer = HashingVectorizer(analyzer='char',ngram_range=(3,3))
 outputIp = []
 hostnames = []
 ports = [22,25,80,443,8080]#otwarte porty jakie bierzemy pod uwage
@@ -40,7 +43,8 @@ for x in samples:
 		hostnames.append(x["hostnames"][0])
 
 #transformacja na macierz liczb
-X = vectorizer.fit_transform(hostnames)
+X = vectorizer.transform(hostnames)
+print X
 X = X.toarray()
 
 Z = []
