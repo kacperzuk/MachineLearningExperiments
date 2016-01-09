@@ -11,16 +11,26 @@ app.get("/:ip", function(request, response){
   var ip = request.params.ip.split(".").reverse().join(".");
   var result = {"status" : "ok", "blacklists":{}};
   async.each(blacklists, function (blacklist, callback){
-    var s = Date.now();
-    dns.lookup(ip+blacklist, function(err){
-      var t = (Date.now() - s)/1000;
-      if(t > 2) { // slooow DNSBL
-        console.log(blacklist, "took", t, "seconds to reply for address", request.params.ip);
-        console.log(err);
-      }
+    var req = dns.Request({
+      question: dns.Question({
+        name: ip+blacklist,
+        type: 'A'
+      }),
+      server: { address: '127.0.0.1' },
+      timeout: 2000
+    });
+    req.on('timeout', () => {
+      console.log("Timeout on", blacklist);
+      result.blacklists[blacklist] = false;
+    });
+    req.on('message', (err, ans) => {
       result.blacklists[blacklist] = !err;
+      console.log("Success on", blacklist);
+    });
+    req.on('end', () => {
       callback();
     });
+    req.send();
   },
   function(){
     response.send(result);
