@@ -7,13 +7,14 @@ from sklearn.svm import SVC
 from sklearn import svm
 import numpy as np
 from sklearn.feature_extraction.text import HashingVectorizer
+from scipy.sparse import coo_matrix, hstack
 
 vec = DictVectorizer()
 #vectorizer = CountVectorizer(analyzer='char',ngram_range=(1, 3),min_df=1)
 vectorizer = HashingVectorizer(analyzer='char',ngram_range=(3,3))
 outputIp = []
 hostnames = []
-ports = [22,25,80,443,8080]#otwarte porty jakie bierzemy pod uwage
+openPorts = [22,25,80,443,8080]#otwarte porty jakie bierzemy pod uwage
 
 
 newDict = [] #lista wszystkich whois
@@ -34,8 +35,9 @@ for val in samples:
 					d[z + str(j) + key] = y[z][key]
 	newDict.append(d)		
 
-
+################################################################################
 #stworzenie listy wszystkich hostname'ow
+################################################################################
 for x in samples:
 	if len(x["hostnames"]) == 0:
 		hostnames.append("")
@@ -44,10 +46,11 @@ for x in samples:
 
 #transformacja na macierz liczb
 X = vectorizer.transform(hostnames)
-print X
-X = X.toarray()
 
-Z = []
+################################################################################
+#stworzenie macierzy rzadkich (sparse amtrix) dla kazdego elementu whois'a 
+#i dodanie go do istniejącej macierzy wyników (hstack)
+################################################################################
 
 for i,key in enumerate(newDict[0]):
  result = []
@@ -57,25 +60,30 @@ for i,key in enumerate(newDict[0]):
   else:
    result.append("")
 
- T = vectorizer.fit_transform(result)
- T = T.toarray()
- if i == 0:
-  for v, g in enumerate(T):
-  	foo = []
-  	foo = g
-  	outputIp.append(foo)
- else:
-  for v, g in enumerate(T):
-  	foo = []
-  	foo = [n for n in outputIp[v]] + [n for n in g]
-  	outputIp[v] = foo
-	
+ T = vectorizer.transform(result)
+ X = hstack([X,T])
 
-#stowrzenie macierzy nxm gdzie n -liczba probek m - ilosc feature'ow
+###############################################################################
+#stworzenie macierzy ip
+###############################################################################
+
+ip = []
 for i,val in enumerate(samples):
-	foo = []
-	foo = [n for n in outputIp[i]] +  ([int(y) for y in val["ip"].split(".")])	+ [n for n in X[i]] + [int(x  in val["ports"]) for x in ports] 
-	outputIp[i] = foo
- 
+ ip.append([int(y) for y in val["ip"].split(".")])
+X = hstack([X,ip])
+
+###############################################################################
+# stworznie macierzy portów
+###############################################################################
+
+ports = []
+for i,val in enumerate(samples):
+ p = []
+ for x in openPorts:
+  p.append(int(x  in val["ports"]))
+ ports.append(p)
+
+X = hstack([X,ports])
+
 
 
