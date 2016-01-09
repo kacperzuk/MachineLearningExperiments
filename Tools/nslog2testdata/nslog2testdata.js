@@ -36,7 +36,7 @@ var processed_addresses = [];
 logstream.on('end', () => {
   function processBatch() {
     const promises = [];
-    const batch = addresses.splice(0, 5);
+    const batch = addresses.splice(0, 20);
     const start = Date.now();
     batch.forEach((addr) => {
       for(let key in scanners) {
