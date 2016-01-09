@@ -11,8 +11,8 @@ app.get("/:ip", function(request, response){
     var s = Date.now();
     dns.lookup(ip+blacklist, function(err){
       var t = (Date.now() - s)/1000;
-      if(t > 1) { // slooow DNSBL
-        console.log(blacklist, "is slow, consider dropping it");
+      if(t > 2) { // slooow DNSBL
+        console.log(blacklist, "took", t, "seconds to reply for address", request.params.ip);
       }
       result.blacklists[blacklist] = !err;
       callback();
