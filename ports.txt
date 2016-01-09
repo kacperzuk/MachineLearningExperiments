@@ -4,4 +4,4 @@
 3001 - Scanners Facade - hosts management interface
 
 4000 - RevDNS Scanner
-4001 - ??? Scanner
+4001 - Whois Scanner
