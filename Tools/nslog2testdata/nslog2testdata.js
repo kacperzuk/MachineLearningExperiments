@@ -10,7 +10,8 @@ http.globalAgent.maxSockets = 100;
 const logstream = byline(fs.createReadStream('log.txt'));
 const scanners = {
   "hostnames": "http://127.0.0.1:4000",
-  "whois": "http://127.0.0.1:4001"
+  "whois": "http://127.0.0.1:4001",
+  "dnsbl": "http://127.0.0.1:4002
 };
 
 
