@@ -1,5 +1,5 @@
 module.exports = [
-  ".dnsbl.inps.de",
+/*  ".dnsbl.inps.de",
   ".all.s5h.net",
   ".bl.emailbasura.org",
   ".blackholes.five-ten-sg.com",
@@ -55,7 +55,7 @@ module.exports = [
   ".spamrbl.imp.ch",
   ".spamsources.fabel.dk",
   ".t3direct.dnsbl.net.au",
-  ".tor.ahbl.org",
+  ".tor.ahbl.org",*/
   ".ubl.lashback.com",
   ".ubl.unsubscore.com",
   ".virbl.bit.nl",

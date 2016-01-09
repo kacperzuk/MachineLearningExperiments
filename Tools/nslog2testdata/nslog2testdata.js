@@ -30,34 +30,42 @@ logstream.on('data', (line) => {
   });
 });
 
+var processed_addresses = [];
+
 
 logstream.on('end', () => {
-  const promises = [];
-  let pending = 0;
-  addresses.forEach((addr) => {
-    for(let key in scanners) {
-      let scanner = scanners[key];
-      promises.push(new Promise((resolve) => {
-        pending += 1;
-        http.request(scanner+"/"+addr.ip, (res) => {
-          pending -= 1;
-          let body = new Buffer(0);
-          res.on('data', (d) => { body = Buffer.concat([body, d]); });
-          res.on('end', () => {
-            const res = JSON.parse(body);
-            addr[key] = null;
-            if(res.status === "ok") {
-              addr[key] = res[key];
-            }
-            console.log("Left:", pending);
-            resolve();
-          });
-        }).end();
-      }));
-    };
-  });
-  Promise.all(promises).then(() => {
-    fs.writeFile("data.py", "# -*- coding: utf8 -*-\n\nsamples = "+JSON.stringify(addresses, null, 4).replace(/false/g, "False").replace(/null/g, "None").replace(/true/g, "True"));
-  }).catch((e) => console.log(e));;
+  function processBatch() {
+    const promises = [];
+    const batch = addresses.splice(0, 5);
+    const start = Date.now();
+    batch.forEach((addr) => {
+      for(let key in scanners) {
+        let scanner = scanners[key];
+        promises.push(new Promise((resolve) => {
+          http.request(scanner+"/"+addr.ip, (res) => {
+            let body = new Buffer(0);
+            res.on('data', (d) => { body = Buffer.concat([body, d]); });
+            res.on('end', () => {
+              const res = JSON.parse(body);
+              addr[key] = null;
+              if(res.status === "ok") {
+                addr[key] = res[key];
+              }
+              resolve();
+            });
+          }).end();
+        }));
+      };
+    });
+    Promise.all(promises).then(() => {
+      console.log("Left:", addresses.length, "\t\tTime to process batch of",batch.length,":", (Date.now() - start)/1000);
+      [].push.apply(processed_addresses, batch);
+      if(addresses.length > 0)
+        processBatch()
+      else
+        fs.writeFile("data.py", "# -*- coding: utf8 -*-\n\nsamples = "+JSON.stringify(processed_addresses, null, 4).replace(/false/g, "False").replace(/null/g, "None").replace(/true/g, "True"));
+    }).catch((e) => console.log(e));;
+  }
+  processBatch();
 });
 

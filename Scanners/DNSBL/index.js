@@ -1,8 +1,10 @@
 var express = require("express");
 var app = express();
-var dns = require("dns");
+var dns = require("native-dns");
 var async = require("async");
 var blacklists = require("./blacklists");
+
+dns.platform.name_servers = [{address: "213.241.79.38"}]
 
 app.get("/:ip", function(request, response){
   var ip = request.params.ip.split(".").reverse().join(".");
@@ -13,6 +15,7 @@ app.get("/:ip", function(request, response){
       var t = (Date.now() - s)/1000;
       if(t > 2) { // slooow DNSBL
         console.log(blacklist, "took", t, "seconds to reply for address", request.params.ip);
+        console.log(err);
       }
       result.blacklists[blacklist] = !err;
       callback();
