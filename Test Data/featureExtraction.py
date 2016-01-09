@@ -8,6 +8,7 @@ from sklearn import svm
 import numpy as np
 from sklearn.feature_extraction.text import HashingVectorizer
 from scipy.sparse import coo_matrix, hstack
+import scipy.io
 
 vec = DictVectorizer()
 #vectorizer = CountVectorizer(analyzer='char',ngram_range=(1, 3),min_df=1)
@@ -84,3 +85,9 @@ for i,val in enumerate(samples):
  ports.append(p)
 
 X = hstack([X,ports])
+
+###############################################################################
+# zapis do pliku
+###############################################################################
+
+scipy.io.mmwrite("training_features", X)
