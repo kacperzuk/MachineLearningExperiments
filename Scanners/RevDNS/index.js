@@ -16,6 +16,7 @@ app.get("/:ip", function(request, response){
     if (err){
 
       failure.reason = err.message;
+      response.status(403);
       response.send(JSON.stringify(failure));
 
       return;
