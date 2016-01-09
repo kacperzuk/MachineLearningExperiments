@@ -4,7 +4,8 @@ var dns = require("native-dns");
 var async = require("async");
 var blacklists = require("./blacklists");
 
-dns.platform.name_servers = [{address: "213.241.79.38"}]
+// make user we're always using local DNS resolver
+dns.platform.name_servers = [{address: "127.0.0.1"}]
 
 app.get("/:ip", function(request, response){
   var ip = request.params.ip.split(".").reverse().join(".");
