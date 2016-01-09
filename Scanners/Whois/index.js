@@ -4,7 +4,6 @@ var express = require("express");
 var app = express();
 
 function limitReached(result) {
-  return true;
   return result.some((res) => {
     return res.data.error && (
            res.data.error.includes("429") ||
@@ -27,7 +26,7 @@ app.get("/:url", function(request, response){
       failure.reason = error.message;
       response.send(failure);
     } else if(limitReached(result)){
-      console.log("Limit reached");
+      console.log("Limit reached for ", url);
       failure.status = "error";
       failure.reason = result;
       response.status(400);
@@ -35,7 +34,7 @@ app.get("/:url", function(request, response){
     } else if(hasError(result)){
       failure.reason = result;
       response.send(failure);
-      //response.status(403);
+      response.status(403);
     } else{
       success.whois = result;
       response.send(success);
