@@ -3,7 +3,7 @@ module.exports = [
   ".all.s5h.net",
   ".bl.emailbasura.org",
   ".blackholes.five-ten-sg.com",
-  "cbl.abuseat.org",
+  ".cbl.abuseat.org",
   ".combined.rbl.msrbl.net",
   ".dnsbl-2.uceprotect.net",
   ".dnsbl.anticaptcha.net",
