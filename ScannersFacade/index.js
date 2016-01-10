@@ -29,10 +29,23 @@ facade.get("/:ip", (req, res) => {
     promises.push(new Promise((resolve) => {
       let host = hosts[0];
       let dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
+      let handleFail = () => {
+        removeHost();
+      };
+      let removeHost = () => {
+        hostsManager.path = "/"+host;
+        let r = http.request(hostsManager).end();
+        let i = hosts.indexOf(host);
+        if(i > -1)
+          hosts.splice(i, 1);
+        host = hosts[0];
+        dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
+      };
       let handleResp = (res) => {
         let buf = ""
         res.on('data', (chunk) => buf += chunk.toString());
         res.on('end', () => {
+
           let result = JSON.parse(buf);
           if(hosts.length > 1)
             result.status = "fail";
@@ -42,18 +55,16 @@ facade.get("/:ip", (req, res) => {
             resolve();
           } else {
             console.log("Retry after", scanner, "returned", result)
-            hostsManager.path = "/"+host;
-            let r = http.request(hostsManager).end();
-            let i = hosts.indexOf(host);
-            if(i > -1)
-              hosts.splice(i, 1);
-            host = hosts[0];
-            dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
-            http.request(dest, handleResp).end();
+            removeHost();
+            let r = http.request(dest, handleResp);
+            r.on('error', handleFail);
+            r.end();
           }
         });
       }
-      http.request(dest, handleResp).end();
+      let r = http.request(dest, handleResp);
+      r.on('error', handleFail);
+      r.end();
     }).catch((e) => console.log(e)));
   }
 
