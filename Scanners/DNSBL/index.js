@@ -24,7 +24,7 @@ app.get("/:ip", function(request, response){
       result.blacklists[blacklist] = false;
     });
     req.on('message', (err, ans) => {
-      let listed = false;
+      var listed = false;
       if(err) listed = true;
       if(ans && ans.answer && ans.answer.length > 0) listed = true;
       result.blacklists[blacklist] = listed;
