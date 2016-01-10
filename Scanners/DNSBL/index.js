@@ -24,7 +24,10 @@ app.get("/:ip", function(request, response){
       result.blacklists[blacklist] = false;
     });
     req.on('message', (err, ans) => {
-      result.blacklists[blacklist] = !err;
+      let listed = false;
+      if(err) listed = true;
+      if(ans && ans.answer && ans.answer.length > 0) listed = true;
+      result.blacklists[blacklist] = listed;
       console.log("Success on", blacklist);
     });
     req.on('end', () => {
