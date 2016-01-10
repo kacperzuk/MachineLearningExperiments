@@ -37,12 +37,11 @@ facade.get("/:ip", (req, res) => {
           if(hosts.length > 1)
             result.status = "fail";
           if(result.status === "ok") {
-            console.log("Success");
             delete result.status;
             ret[scanner] = result;
             resolve();
           } else {
-            console.log("Retry");
+            console.log("Retry after", scanner, "returned", result)
             hostsManager.path = "/"+host;
             let r = http.request(hostsManager).end();
             let i = hosts.indexOf(host);
@@ -71,6 +70,7 @@ management.post("*", (req, res) => {
   res.end();
   if(!req.body || !(req.body instanceof Array)) return;
   hosts = req.body;
+  console.log("Received new hosts", hosts);
 });
 management.listen(3001);
 
