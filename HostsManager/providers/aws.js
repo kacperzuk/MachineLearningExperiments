@@ -55,7 +55,8 @@ module.exports = {
         started_instances = [].concat.apply([],
           data.Reservations.map(r => r.Instances)
         ).reduce((o, i) => {
-          o[i.PublicDnsName] = i.InstanceId;
+          if(i.State.Name != 'terminated')
+            o[i.PublicDnsName] = i.InstanceId;
           return o;
         }, {});
 
