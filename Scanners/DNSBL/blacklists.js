@@ -51,7 +51,7 @@ module.exports = [
   ".spam.rbl.msrbl.net",
   ".spam.spamrats.com",
   ".spambot.bls.digibase.ca",
-  ".spamlist.or.kr",
+  //".spamlist.or.kr",
   ".spamrbl.imp.ch",
   ".spamsources.fabel.dk",
   ".t3direct.dnsbl.net.au",
