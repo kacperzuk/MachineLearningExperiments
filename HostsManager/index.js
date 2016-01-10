@@ -2,28 +2,19 @@
 
 const http = require("http");
 const app = require("express")();
-const bodyParser = require("body-parser");
 const provider = require("./providers/aws.js");
 
 let hosts = [];
-let balancer = null;
+let balancer = process.env.balancer || "127.0.0.1";
 
-app.use(bodyParser.json());
 app.get("*", (req, res) => {
-  if (balancer) {
-    console.warning("Changing balancer from", balancer, "to", req.connection.remoteAddress);
-  }
-  balancer = req.connection.remoteAddress;
   res.send({ status: "ok", hosts });
 });
 
-app.post("*", (req, res) => {
+app.post("/:host", (req, res) => {
   res.end();
 
-  if(!req.body) return;
-  if(!req.body.host) return;
-
-  const host = req.body.host;
+  const host = req.params.host;
 
   if(hosts.indexOf(host) < 0) return;
 
@@ -49,3 +40,4 @@ app.post("*", (req, res) => {
 });
 
 app.listen(2000);
+provider.init((h) => hosts = h);
