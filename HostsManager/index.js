@@ -35,6 +35,7 @@ app.post("/:host", (req, res) => {
           "Content-Length": postData.length
         }
       });
+      req.on('error', () => {});
       req.write(postData);
       req.end();
     }, 30*1000);
@@ -45,4 +46,4 @@ app.listen(2000);
 provider.init((h) => hosts = h);
 setTimeout(() => {
   provider.listInstances((h) => hosts = h);
-}, 60*1000);
+}, 30*1000);
