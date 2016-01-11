@@ -43,3 +43,6 @@ app.post("/:host", (req, res) => {
 
 app.listen(2000);
 provider.init((h) => hosts = h);
+setTimeout(() => {
+  provider.listInstances((h) => hosts = h);
+}, 60*1000);

@@ -55,7 +55,7 @@ module.exports = {
         started_instances = [].concat.apply([],
           data.Reservations.map(r => r.Instances)
         ).reduce((o, i) => {
-          if(i.State.Name != 'terminated')
+          if(i.PublicDnsName)
             o[i.PublicDnsName] = i.InstanceId;
           return o;
         }, {});
@@ -65,7 +65,19 @@ module.exports = {
       });
     });
   },
-
+  listInstances: function(cb) {
+    ec2.describeInstances(scannersFilter(), (err, data) => {
+      started_instances = [].concat.apply([],
+        data.Reservations.map(r => r.Instances)
+      ).reduce((o, i) => {
+        if(i.PublicDnsName)
+          o[i.PublicDnsName] = i.InstanceId;
+        return o;
+      }, {});
+      if(cb)
+        cb(Object.keys(started_instances));
+    });
+  },
   destroyInstance: function(h, cb) {
     let id = started_instances[h];
     delete started_instances[h];
