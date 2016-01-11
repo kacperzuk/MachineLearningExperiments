@@ -48,7 +48,7 @@ facade.get("/:ip", (req, res) => {
         res.on('end', () => {
 
           let result = JSON.parse(buf);
-          if(hosts.length > 1)
+          if(hosts.length > 2)
             result.status = "fail";
           if(result.status === "ok") {
             delete result.status;
