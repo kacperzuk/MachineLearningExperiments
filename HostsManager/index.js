@@ -2,34 +2,48 @@
 
 const http = require("http");
 const app = require("express")();
-const bodyParser = require("body-parser");
-const provider = require("./providers/dummy.js");
+const provider = require("./providers/aws.js");
 
-const hosts = {};
+let hosts = [];
+let balancer = process.env.balancer || "127.0.0.1";
 
-app.use(bodyParser.json());
-app.post("*", (req, res) => {
+app.get("*", (req, res) => {
+  res.send({ status: "ok", hosts });
+});
+
+app.post("/:host", (req, res) => {
   res.end();
 
-  if(!req.body) return;
-  if(!req.body.scanner || !req.body.host) return;
-  if(!hosts[req.body.host]) return;
+  const host = req.params.host;
 
-  const host = hosts[req.body.host]
-  let i = host.indexOf(req.body.scanner);
-  if(i > -1) {
-    host.splice(i, 1);
-  }
+  if(hosts.indexOf(host) < 0) return;
 
-  if(host.length === 0) {
-    provider.destroyInstance(req.body.host, (err) => {
-      if(err) {
-        console.log("Error why destroying instance", req.body.host, err);
-      } else {
-        delete hosts[req.body.host];
-      }
-    });
-  }
+  hosts.splice(hosts.indexOf(host), 1);
+
+  provider.destroyInstance(host);
+  provider.createInstance((host) => {
+    setTimeout(() => {
+      hosts.push(host);
+      let postData = JSON.stringify(hosts);
+      let req = http.request({
+        hostname: balancer,
+        port: 3001,
+        path: "/",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": postData.length
+        }
+      });
+      req.on('error', () => {});
+      req.write(postData);
+      req.end();
+    }, 30*1000);
+  });
 });
 
 app.listen(2000);
+provider.init((h) => hosts = h);
+setTimeout(() => {
+  provider.listInstances((h) => hosts = h);
+}, 30*1000);

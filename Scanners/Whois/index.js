@@ -3,6 +3,19 @@ var whois = require("whois-json");
 var express = require("express");
 var app = express();
 
+function limitReached(result) {
+  return result.some((res) => {
+    return res.data.error && (
+           res.data.error.includes("429") ||
+           res.data.error.includes("201")
+    );
+  });
+}
+
+function hasError(result) {
+  return result.some((res) => !!res.data.error);
+}
+
 app.get("/:url", function(request, response){
 
   var success = {"status":"ok", "whois":"whois"};
@@ -12,20 +25,21 @@ app.get("/:url", function(request, response){
     if(error){
       failure.reason = error.message;
       response.send(failure);
-    } else if((result.error) && (result.error.includes("429"))){
+    } else if(limitReached(result)){
+      console.log("Limit reached for ", url);
       failure.status = "error";
-      failure.reason = result;	
-      response.status(500);
+      failure.reason = result;
+      response.status(400);
       response.send(failure);
-    } else if(result.error){
+    } else if(hasError(result)){
       failure.reason = result;
       response.send(failure);
-      response.status(503);
+      response.status(403);
     } else{
       success.whois = result;
       response.send(success);
     }
-    
+
   });
 });
 app.listen(4001);

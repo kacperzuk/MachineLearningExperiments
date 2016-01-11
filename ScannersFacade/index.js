@@ -2,39 +2,105 @@
 
 const http = require("http");
 const url = require("url");
-const splof = require("splof")();
-const app = require("express")();
+const express = require("express");
 const bodyParser = require("body-parser");
 
-const hostsManager = url.parse(require("./config.json").hostsManagerUrl);
-hostsManager.method = "POST";
+const hostsManager = url.parse(process.env.hostsManagerUrl || "http://127.0.0.1:2000/");
 
-splof
-  .strategies([
-    (err, res) => {
-      return !err && res.statusCode === 200;
-    }
-  ])
-  .onRetry((err, res) => {
-    let host = res.rocky.options.prev_target;
-    let scanner = (new RegExp("^[/]([^/]+)")).match(res.url)[1];
-    if(scanner && faulty) {
-      let req = http.request(hostsManager);
-      req.write(JSON.stringify({scanner, host}));
-      req.end();
-    }
-  })
-;
+const scanners = {
+  "revdns": 4000,
+  "whois": 4001,
+  "dnsbl": 4002
+};
 
-splof.listen(3000);
+let hosts = [];
 
-app.use(bodyParser.json());
-app.post("*", (req, res) => {
-  res.end();
-  if(!req.body || !(req.body.scanners instanceof Object)) return;
-  for(let scanner in req.body.scanners) {
-    let servers = req.body.scanners[scanner];
-    splof.get(`/${scanner}`).balance(servers);
-  };
+
+const facade = express();
+facade.get("/:ip", (req, res) => {
+  if(hosts.length === 0) {
+    res.send({"status": "trylater"});
+    return;
+  }
+
+  const promises = [];
+  const ret = {"status": "ok"};
+  for(let scanner in scanners) {
+    promises.push(new Promise((resolve) => {
+      let host = hosts[0];
+      let dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
+      let handleFail = () => {
+        console.log("Connection fail with", host);
+        removeHost();
+      };
+      let removeHost = () => {
+        hostsManager.path = "/"+host;
+        let r = http.request(hostsManager).end();
+        let i = hosts.indexOf(host);
+        if(i > -1)
+          hosts.splice(i, 1);
+        host = hosts[0];
+        dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
+      };
+      let handleResp = (res) => {
+        let buf = ""
+        res.on('data', (chunk) => buf += chunk.toString());
+        res.on('end', () => {
+
+          let result = JSON.parse(buf);
+          if(hosts.length > 2)
+            result.status = "fail";
+          if(result.status === "ok") {
+            delete result.status;
+            ret[scanner] = result;
+            resolve();
+          } else {
+            console.log("Retry after", scanner, "from", host, "returned", result)
+            removeHost();
+            let r = http.request(dest, handleResp);
+            r.on('error', handleFail);
+            r.end();
+          }
+        });
+      }
+      let r = http.request(dest, handleResp);
+      r.on('error', handleFail);
+      r.end();
+    }).catch((e) => console.log(e)));
+  }
+
+  Promise.all(promises).then(() => {
+    res.send(ret);
+  });
 });
-app.listen(3001);
+facade.listen(3000);
+
+
+const management = express();
+management.use(bodyParser.json());
+management.post("*", (req, res) => {
+  res.end();
+  if(!req.body || !(req.body instanceof Array)) return;
+  hosts = req.body;
+  console.log("Received new hosts", hosts);
+});
+management.listen(3001);
+
+function refreshHosts() {
+  hostsManager.method = "GET";
+  let r = http.request(hostsManager, (res) => {
+    let buf = "";
+    res.on("data", (chunk) => buf += chunk.toString());
+    res.on("end", () => {
+      hosts = JSON.parse(buf)["hosts"];
+    });
+  });
+  r.on('error', () => {
+    console.log("Couldn't refresh hosts, connection error");
+  });
+  r.end();
+  hostsManager.method = "POST";
+  setTimeout(refreshHosts, 30*1000);
+}
+
+refreshHosts();
