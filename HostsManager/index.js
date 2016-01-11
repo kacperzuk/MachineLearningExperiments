@@ -22,20 +22,22 @@ app.post("/:host", (req, res) => {
 
   provider.destroyInstance(host);
   provider.createInstance((host) => {
-    hosts.push(host);
-    let postData = JSON.stringify(hosts);
-    let req = http.request({
-      hostname: balancer,
-      port: 3001,
-      path: "/",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": postData.length
-      }
-    });
-    req.write(postData);
-    req.end();
+    setTimeout(() => {
+      hosts.push(host);
+      let postData = JSON.stringify(hosts);
+      let req = http.request({
+        hostname: balancer,
+        port: 3001,
+        path: "/",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": postData.length
+        }
+      });
+      req.write(postData);
+      req.end();
+    }, 30*1000);
   });
 });
 
