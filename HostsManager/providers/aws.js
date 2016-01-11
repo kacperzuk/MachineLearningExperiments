@@ -6,22 +6,21 @@ const ec2 = new AWS.EC2({
   apiVersion: "2015-12-17"
 });
 
-function scannersFilter() {
-  return {
+function scannersFilter(state) {
+  let f = {
     Filters: [{
       Name: "tag:Service",
       Values: ["nastyhosts-scanners"]
     }]
   };
-}
 
-function stoppedScannersFilter() {
-  let f = scannersFilter();
-  f.Filters.push({
-    Name: "instance-state-name",
-    Values: ["stopped"]
-  });
-  return f;
+  if(state)
+    f.Filters.push({
+      Name: "instance-state-name",
+      Values: [state]
+    });
+
+  return f
 }
 
 function instancesFilter(instances) {
@@ -39,34 +38,24 @@ function instancesFilter(instances) {
 
 let started_instances = {};
 let stopped_instances = [];
-
-module.exports = {
+let provider;
+module.exports = provider = {
   init: function(cb) {
     console.log("Starting stopped instances");
-    ec2.describeInstances(stoppedScannersFilter(), (err, data) => {
+    ec2.describeInstances(scannersFilter("stopped"), (err, data) => {
       let ids = [].concat.apply([],
         data.Reservations.map(r => r.Instances)
       ).map(i => i.InstanceId);
 
       ec2.startInstances({ InstanceIds: ids }).send();
-      ec2.waitFor("instanceRunning", scannersFilter(), (err, data) => {
-        if (err) console.log(err);
-
-        started_instances = [].concat.apply([],
-          data.Reservations.map(r => r.Instances)
-        ).reduce((o, i) => {
-          if(i.PublicDnsName && i.State.Name == "running")
-            o[i.PublicDnsName] = i.InstanceId;
-          return o;
-        }, {});
-
-        if(cb)
-          cb(Object.keys(started_instances));
+      ec2.waitFor("instanceRunning", scannersFilter("pending"), (err, data) => {
+        provider.listInstances(cb);
       });
     });
+    provider.listInstances(cb);
   },
   listInstances: function(cb) {
-    ec2.describeInstances(scannersFilter(), (err, data) => {
+    ec2.describeInstances(scannersFilter("running"), (err, data) => {
       started_instances = [].concat.apply([],
         data.Reservations.map(r => r.Instances)
       ).reduce((o, i) => {
