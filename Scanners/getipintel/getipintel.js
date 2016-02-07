@@ -18,7 +18,7 @@ app.get("/:ip", function (request, response){
       var a = buffer.result-0;
       if(buffer.status == "success"){
         result.status = "ok";
-        if(a < 0,5){
+        if(a < 0.5){
           result.allow = true;
         }
         response.send(result);
