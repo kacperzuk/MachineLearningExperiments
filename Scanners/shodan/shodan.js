@@ -17,7 +17,7 @@ app.get("/:ip", function(request, response){
     res.on("end", function(){
       buffer = JSON.parse(buffer.toString());
       result.status = "ok";
-      result.shodan = buffer;
+      result.shodan = {"ports" : buffer.ports, "isp" : buffer.isp};
       response.send(result);
     })
   }).on("error", function(error){
