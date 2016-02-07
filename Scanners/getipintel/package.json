@@ -1,0 +1,14 @@
+{
+  "name": "getipintel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getipintel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jakub Krol",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}

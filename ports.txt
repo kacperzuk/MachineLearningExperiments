@@ -6,3 +6,6 @@
 4000 - RevDNS Scanner
 4001 - Whois Scanner
 4002 - DNSBL Scanner
+4003 - getipintel Scanner
+4004 - Shodan Scanner
+
