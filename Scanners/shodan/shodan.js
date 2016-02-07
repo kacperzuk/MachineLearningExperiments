@@ -12,16 +12,16 @@ app.get("/:ip", function(request, response){
   https.get(options, function(res){
     var buffer = "";
     res.on("data", function(data){
-    	buffer += data.toString();
+      buffer += data.toString();
     });
     res.on("end", function(){
       buffer = JSON.parse(buffer.toString());
       result.status = "ok";
       result.shodan = {"ports" : buffer.ports, "isp" : buffer.isp};
       response.send(result);
-    })
+    });
   }).on("error", function(error){
-  	result.shodan = error.message;
-  	response.send(result);
-  })
+    result.shodan = error.message;
+    response.send(result);
+  });
 }).listen(4004);
