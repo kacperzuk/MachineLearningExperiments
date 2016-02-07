@@ -14,11 +14,13 @@ app.get("/:ip", function(request, response){
     	buffer += data.toString();
     });
     res.on("error", function(error){
-    	result.shodan = error.message;
-    	response.send(result);
+    		result.status = "ok";
+    		result.shodan = null;
+    		response.send(result);
     });
     res.on("end", function(){
       buffer = JSON.parse(buffer.toString());
+      result.status = "ok";
       result.shodan = buffer;
       response.send(result);
     })
