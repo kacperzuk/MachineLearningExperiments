@@ -1,3 +1,5 @@
+//// Author: Jakub Król <jakub.krol@poczta.fm>
+
 var http = require("http");
 var express = require("express");
 var app = express();
