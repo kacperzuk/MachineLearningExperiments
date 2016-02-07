@@ -8,7 +8,6 @@ app.get("/:ip", function(request, response){
   var ip = request.params.ip;
   var options = {hostname: "api.shodan.io", path: "/shodan/host/" + ip + "?key=aH7F5pcxsC3U9i7hmPUYA6vwdehxxNeP"};
   var result = {status: "tryagain", shodan: "shodan"};
- //for (var i = 0; i < 10000; i++) {
 
   https.get(options, function(res){
     var buffer = "";
@@ -25,5 +24,4 @@ app.get("/:ip", function(request, response){
   	result.shodan = error.message;
   	response.send(result);
   })
-//}
 }).listen(4004);
