@@ -9,22 +9,13 @@ app.get("/:ip", function(request, response){
   var my_ip = request.params.ip;
 
   var success = {"status":"ok", "hostnames":"hostnames"};
-  var failure = {"status":"tryagain", "reason":"reason"};
 
   dns.reverse(my_ip, function(err, hostnames){
-
-    if (err){
-
-      failure.reason = err.message;
-      response.status(403);
-      response.send(JSON.stringify(failure));
-
-      return;
-    }  else{
-
+    if(hostnames)
       success.hostnames = hostnames;
-      response.send(JSON.stringify(success));
-    }
+    else
+      success.hostnames = [];
+    response.send(JSON.stringify(success));
   });
 
 });
