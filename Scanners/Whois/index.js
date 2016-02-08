@@ -21,6 +21,11 @@ app.get("/:url", function(request, response){
   var success = {"status":"ok", "whois":"whois"};
   var failure = {"status":"tryagain", "reason":"reason"};
   var url = request.params.url;
+  if(url.includes(":") == true){
+    success.whois = null;
+    response.send(success);
+    return;
+  }
   whois(url, {verbose: true}, function(error, result){
     if(error){
       failure.reason = error.message;
