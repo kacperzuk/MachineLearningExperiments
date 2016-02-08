@@ -23,11 +23,10 @@ app.get("/:url", function(request, response){
   var url = request.params.url;
   whois(url, {verbose: true}, function(error, result){
     if(error){
-      failure.reason = error.message;
-      response.send(failure);
+      success.whois = null;
+      response.send(success);
     } else if(limitReached(result)){
       console.log("Limit reached for ", url);
-      failure.status = "error";
       failure.reason = result;
       response.status(400);
       response.send(failure);
