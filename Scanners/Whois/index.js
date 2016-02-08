@@ -22,7 +22,7 @@ app.get("/:url", function(request, response){
   var failure = {"status":"tryagain", "reason":"reason"};
   var url = request.params.url;
   if(url.includes(":") == true){
-    success.whois = "lookup: IPv6 not supported";
+    success.whois = null;
     response.send(success);
     return;
   }
