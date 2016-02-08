@@ -10,7 +10,8 @@ const hostsManager = url.parse(process.env.hostsManagerUrl || "http://127.0.0.1:
 const scanners = {
   "revdns": 4000,
   "whois": 4001,
-  "dnsbl": 4002
+  "dnsbl": 4002,
+  "shodan": 4004
 };
 
 let hosts = [];
@@ -48,8 +49,6 @@ facade.get("/:ip", (req, res) => {
         res.on('end', () => {
 
           let result = JSON.parse(buf);
-          if(hosts.length > 2)
-            result.status = "fail";
           if(result.status === "ok") {
             delete result.status;
             ret[scanner] = result;
