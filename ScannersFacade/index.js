@@ -34,7 +34,7 @@ facade.get("/:ip", (req, res) => {
       let host = hosts[0];
       let dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
       let handleFail = () => {
-        console.log("Connection fail with", host);
+        console.log("Connection fail with", host, "for scanner", scanner);
         if(!process.env.LOCALHOST_ONLY)
           removeHost();
       };
