@@ -8,11 +8,10 @@ class MainHandler(tornado.web.RequestHandler):
 
     def handle_response(self, response):
 
-        data = ""
         if response.error:
             data = response.error
             result = {"status" : "error", "error" : data}
-            self.send
+            self.send(result)
         else:
             data = response.body
             data = json.loads(data)
