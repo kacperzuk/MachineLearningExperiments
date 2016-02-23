@@ -9,3 +9,5 @@
 4003 - getipintel Scanner
 4004 - Shodan Scanner
 
+5000 - nastyhosts
+
