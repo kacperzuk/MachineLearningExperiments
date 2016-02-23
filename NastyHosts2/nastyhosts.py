@@ -6,25 +6,27 @@ import json
 
 class MainHandler(tornado.web.RequestHandler):
 
-    def handle_request(self, response):
+    def handle_response(self, response):
 
         data = ""
         if response.error:
             data = response.error
+            result = {"status" : "error", "error" : data}
+            self.send
         else:
             data = response.body
             data = json.loads(data)
             result = {"status" : "ok", "data" : data}
-            self.end(result)
+            self.send(result)
 
     @tornado.web.asynchronous
     def get(self, url):
 
-        request = tornado.httpclient.HTTPRequest("http://v1.nastyhosts.com/" + url)    
+        request = tornado.httpclient.HTTPRequest("http://v1.nastyhosts.com/"+url)
         http_client = tornado.httpclient.AsyncHTTPClient()
-        http_client.fetch(request, callback = self.handle_request)
+        http_client.fetch(request, callback=self.handle_response)
 
-    def end(self, result):
+    def send(self, result):
 
         self.write(result)
         self.finish()
