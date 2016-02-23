@@ -16,6 +16,9 @@ const scanners = {
 
 let hosts = [];
 
+if(process.env.LOCALHOST_ONLY)
+  hosts.push("127.0.0.1");
+
 
 const facade = express();
 facade.get("/:ip", (req, res) => {
@@ -32,7 +35,8 @@ facade.get("/:ip", (req, res) => {
       let dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
       let handleFail = () => {
         console.log("Connection fail with", host);
-        removeHost();
+        if(!process.env.LOCALHOST_ONLY)
+          removeHost();
       };
       let removeHost = () => {
         hostsManager.path = "/"+host;
@@ -102,4 +106,5 @@ function refreshHosts() {
   setTimeout(refreshHosts, 30*1000);
 }
 
-refreshHosts();
+if(!process.env.LOCALHOST_ONLY)
+  refreshHosts();
