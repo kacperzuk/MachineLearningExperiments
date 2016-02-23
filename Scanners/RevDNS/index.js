@@ -10,13 +10,22 @@ app.get("/:ip", function(request, response){
 
   var success = {"status":"ok", "hostnames":"hostnames"};
 
-  dns.reverse(my_ip, function(err, hostnames){
-    if(hostnames)
-      success.hostnames = hostnames;
-    else
+  try {
+    dns.reverse(my_ip, function(err, hostnames){
+      if(hostnames)
+        success.hostnames = hostnames;
+      else
+        success.hostnames = [];
+      response.send(JSON.stringify(success));
+    });
+  } catch(e) {
+    if(['EINVAL'].indexOf(e.code) > -1) {
       success.hostnames = [];
-    response.send(JSON.stringify(success));
-  });
+      response.send(JSON.stringify(success));
+    } else {
+      throw e;
+    }
+  }
 
 });
 
