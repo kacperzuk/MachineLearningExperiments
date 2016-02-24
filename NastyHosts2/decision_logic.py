@@ -5,32 +5,24 @@ import tornado.httpclient
 import json
 import os
 
-
 facadeUrl = os.getenv("facadeUrl", "http://127.0.0.1:3000/")
+
 
 class MainHandler(tornado.web.RequestHandler):
 
-    def handle_response(self, response):
-
-        if response.error:
-            data = response.error
-            result = {"status" : "error", "error" : data}
-            self.send(result)
-        else:
-            data = response.body
-            data = json.loads(data)
-            result = {"status" : "ok", "data" : data}
-            self.send(result)
+    def process(self, response):
+        data = json.loads(response.body)
+        result = {"suggestion" : "allow/deny", "factor" : 123}
+        self.send(result)
 
     @tornado.web.asynchronous
     def get(self, url):
 
         request = tornado.httpclient.HTTPRequest(facadeUrl+url)
         http_client = tornado.httpclient.AsyncHTTPClient()
-        http_client.fetch(request, callback=self.handle_response)
+        http_client.fetch(request, callback=self.process)
 
     def send(self, result):
-
         self.write(result)
         self.finish()
 
@@ -38,7 +30,7 @@ app = tornado.web.Application([
         (r"/([^/]+)", MainHandler),
     ])
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(app)
-    http_server.listen(5000)
+    http_server.listen(5001)
     tornado.ioloop.IOLoop.current().start()
