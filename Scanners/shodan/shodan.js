@@ -10,6 +10,10 @@ app.get("/:ip", function(request, response){
   var result = {status: "tryagain", shodan: "shodan"};
 
   https.get(options, function(res){
+    if (response.statusCode == 502){
+      response.send(result);
+      return;
+    }
     var buffer = "";
     res.on("data", function(data){
       buffer += data.toString();
