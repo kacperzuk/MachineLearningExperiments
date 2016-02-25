@@ -10,11 +10,15 @@ app.get("/:ip", function(request, response){
   var result = {status: "tryagain", shodan: "shodan"};
 
   https.get(options, function(res){
+    if (response.statusCode == 502){
+      response.send(result)
+    }
     var buffer = "";
     res.on("data", function(data){
       buffer += data.toString();
     });
     res.on("end", function(){
+      console.log(buffer.toString())
       buffer = JSON.parse(buffer.toString());
       result.status = "ok";
       result.shodan = {"ports" : buffer.ports, "isp" : buffer.isp};
