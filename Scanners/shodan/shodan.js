@@ -27,5 +27,8 @@ app.get("/:ip", function(request, response){
   }).on("error", function(error){
     result.shodan = error.message;
     response.send(result);
+  }).setTimeout(5000, function(){
+    result.status = "ok";
+    response.send(result);
   });
 }).listen(4004);

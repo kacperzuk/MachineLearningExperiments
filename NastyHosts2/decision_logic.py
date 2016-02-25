@@ -1,15 +1,15 @@
+import nasty_threats
+
 def process(data):
 
     factor = 1
     text = ""
-    dangers = ["vps", "vpn", "hosting", "server", "bot", "proxy", "amazon"]
-    evil_ports = [22, 80, 443, 465, 500, 587, 1723, 4500, 8080, 8888]
 
     for whois_data in data["whois"]["whois"]:
         for value in whois_data["data"].values():
             text += value
 
-    for danger in dangers:
+    for danger in nasty_threats.dangers:
         if(danger in text.lower()):
             factor *= 0.1
 
@@ -18,7 +18,7 @@ def process(data):
     for revdns_data in data["revdns"]["hostnames"]:
             text += revdns_data
 
-    for danger in dangers:
+    for danger in nasty_threats.dangers:
         if(danger in text):
             factor *= 0.1
 
@@ -28,8 +28,10 @@ def process(data):
 
     if ("ports" in data["shodan"]["shodan"]):
         for port in data["shodan"]["shodan"]["ports"]:
-            if (port in evil_ports):
+            if (port in nasty_threats.evil_ports):
                 factor *= 0.7
+
+    factor = float("{:.4f}".format(factor))
 
     if (factor < 0.05):
         result = {"suggestion" : "deny", "factor" : factor}
