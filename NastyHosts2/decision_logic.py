@@ -4,6 +4,7 @@ def process(data):
     text = ""
     dangers = ["vps", "vpn", "hosting", "server", "bot", "proxy", "amazon"]
     evil_ports = [22, 80, 443, 587, 465, 8080]
+    
     for whois_data in data["whois"]["whois"]:
         for value in whois_data["data"].values():
             text += value
@@ -13,7 +14,7 @@ def process(data):
             factor *= 0.1
 
     text = ""
-    
+
     for revdns_data in data["revdns"]["hostnames"]:
             text += revdns_data
 
