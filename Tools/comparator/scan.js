@@ -80,6 +80,20 @@ pg.connect(argv.pg_host, function(err, client, done) {
       }));
     }
 
+    if(argv.nh2) {
+      promises.push(new Promise((resolve) => {
+        request({
+            uri: urls.nh2+ip,
+            time: true
+        }, function(err, resp, body) {
+          body = JSON.parse(body);
+          let timeToProcess = resp.elapsedTime;
+          let suggestion = body.suggestion;
+          let factor = body.factor;
+          upsert([ip, 'nh2', timeToProcess, suggestion, factor], resolve);
+        });
+      }));
+    }
 
     return Promise.all(promises);
   }

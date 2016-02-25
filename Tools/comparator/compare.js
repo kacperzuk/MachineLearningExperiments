@@ -2,12 +2,12 @@
 
 const pg = require("pg");
 const argv = require("minimist")(process.argv.slice(2));
-const pad = require("pad");
+const pad = require("pad/lib/colors");
 const colors = require("colors/safe");
 
 function pprint(scans) {
-  process.stdout.write("---------------------------------------------------------------------------\n");
-  process.stdout.write("| ");
+  process.stdout.write(pad("", 103, { char: "-" }));
+  process.stdout.write("\n| ");
   process.stdout.write(pad("", 15));
   process.stdout.write(" | ");
   scans.forEach((s) => {
@@ -31,19 +31,18 @@ function pprint(scans) {
 
   scans.forEach((s) => {
     let res = s.suggestion;
-    let padd = 25;
     if(res == "allow") {
       res = colors.green(res);
-      padd += res.length - 5;
     } else {
       res = colors.red(res);
-      padd += res.length - 4;
     }
-    process.stdout.write(pad("Result: "+res+" ("+s.factor+")", padd));
+    process.stdout.write(pad("Result: "+res+" ("+s.factor+")", 25));
     process.stdout.write(" | ");
   });
 
-  process.stdout.write("\n---------------------------------------------------------------------------\n");
+  process.stdout.write("\n");
+  process.stdout.write(pad("", 103, { char: "-" }));
+  process.stdout.write("\n");
 }
 
 pg.connect(argv.pg_host, function(err, client, done) {
