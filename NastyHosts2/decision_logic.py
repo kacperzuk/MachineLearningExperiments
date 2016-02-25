@@ -3,14 +3,14 @@ def process(data):
     factor = 1
     text = ""
     dangers = ["vps", "vpn", "hosting", "server", "bot", "proxy", "amazon"]
-    evil_ports = [22, 80, 443, 587, 465, 8080]
-    
+    evil_ports = [22, 80, 443, 465, 500, 587, 1723, 4500, 8080, 8888]
+
     for whois_data in data["whois"]["whois"]:
         for value in whois_data["data"].values():
             text += value
 
     for danger in dangers:
-        if(danger in text):
+        if(danger in text.lower()):
             factor *= 0.1
 
     text = ""
