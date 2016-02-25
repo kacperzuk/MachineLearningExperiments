@@ -19,6 +19,20 @@ let hosts = [];
 if(process.env.LOCALHOST_ONLY)
   hosts.push("127.0.0.1");
 
+function getNextHost() {
+  // round-robin first 79%
+  // keep last 21% untouched
+
+  let host = hosts.pop();
+  let index;
+  if(hosts.length <= 1) {
+    index = 0;
+  } else {
+    index = Math.ceil((hosts.length+1) * 0.21);
+  }
+  hosts.splice(index, 0, host);
+  return host;
+}
 
 const facade = express();
 facade.get("/:ip", (req, res) => {
@@ -31,7 +45,7 @@ facade.get("/:ip", (req, res) => {
   const ret = {"status": "ok"};
   for(let scanner in scanners) {
     promises.push(new Promise((resolve) => {
-      let host = hosts[0];
+      let host = getNextHost();
       let dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
       let handleFail = () => {
         console.log("Connection fail with", host, "for scanner", scanner);
