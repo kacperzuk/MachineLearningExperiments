@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "byline": "^4.2.1",
+    "colors": "^1.1.2",
     "minimist": "^1.2.0",
     "pad": "^1.0.0",
     "pg": "^4.4.6",
