@@ -38,14 +38,13 @@ const facade = express();
 facade.get("/:ip", (req, res) => {
   const promises = [];
   const ret = {"status": "ok"};
+  let host = getNextHost();
+  if(!host) {
+    res.send({"status": "trylater"});
+    return;
+  }
   for(let scanner in scanners) {
     promises.push(new Promise((resolve) => {
-      let host = getNextHost();
-      if(!host) {
-        ret["status"] = "trylater";
-        resolve();
-        return;
-      }
       let dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
       let handleFail = () => {
         console.log("Connection fail with", host, "for scanner", scanner);
