@@ -4,6 +4,7 @@ import tornado.web
 import tornado.httpclient
 import json
 import os
+import decision_logic
 
 
 facadeUrl = os.getenv("facadeUrl", "http://127.0.0.1:3000/")
@@ -19,7 +20,7 @@ class MainHandler(tornado.web.RequestHandler):
         else:
             data = response.body
             data = json.loads(data)
-            result = {"status" : "ok", "data" : data}
+            result = decision_logic.process(data)
             self.send(result)
 
     @tornado.web.asynchronous
