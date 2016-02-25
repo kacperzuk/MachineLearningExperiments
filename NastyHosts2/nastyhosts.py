@@ -3,6 +3,11 @@ import tornado.httpserver
 import tornado.web
 import tornado.httpclient
 import json
+import os
+import decision_logic
+
+
+facadeUrl = os.getenv("facadeUrl", "http://127.0.0.1:3000/")
 
 class MainHandler(tornado.web.RequestHandler):
 
@@ -15,13 +20,13 @@ class MainHandler(tornado.web.RequestHandler):
         else:
             data = response.body
             data = json.loads(data)
-            result = {"status" : "ok", "data" : data}
+            result = decision_logic.process(data)
             self.send(result)
 
     @tornado.web.asynchronous
     def get(self, url):
 
-        request = tornado.httpclient.HTTPRequest("http://v1.nastyhosts.com/"+url)
+        request = tornado.httpclient.HTTPRequest(facadeUrl+url)
         http_client = tornado.httpclient.AsyncHTTPClient()
         http_client.fetch(request, callback=self.handle_response)
 
