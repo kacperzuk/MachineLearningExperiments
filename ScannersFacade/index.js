@@ -36,16 +36,16 @@ function getNextHost() {
 
 const facade = express();
 facade.get("/:ip", (req, res) => {
-  if(hosts.length === 0) {
-    res.send({"status": "trylater"});
-    return;
-  }
-
   const promises = [];
   const ret = {"status": "ok"};
   for(let scanner in scanners) {
     promises.push(new Promise((resolve) => {
       let host = getNextHost();
+      if(!host) {
+        ret["status"] = "trylater";
+        resolve();
+        return;
+      }
       let dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
       let handleFail = () => {
         console.log("Connection fail with", host, "for scanner", scanner);
@@ -58,7 +58,7 @@ facade.get("/:ip", (req, res) => {
         let i = hosts.indexOf(host);
         if(i > -1)
           hosts.splice(i, 1);
-        host = hosts[0];
+        host = getNextHost();
         dest = "http://"+host+":"+scanners[scanner]+"/"+req.params.ip;
       };
       let handleResp = (res) => {
