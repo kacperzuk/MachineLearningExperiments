@@ -32,6 +32,7 @@ app.get("/:ip", function(request, response){
     response.send(result);
   }).setTimeout(5000, function(){
     result.status = "ok";
+    result.shodan = null;
     response.send(result);
     sended = true;
   });
