@@ -49,7 +49,7 @@ pg.connect(argv.pg_host, function(err, client, done) {
   if(err) throw err;
 
 
-  client.query("SELECT DISTINCT ip FROM scans ORDER BY ip LIMIT 10", (err, result) => {
+  client.query("SELECT DISTINCT ip FROM scans ORDER BY ip", (err, result) => {
     if(err) throw err;
 
     const promises = [];

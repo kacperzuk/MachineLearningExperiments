@@ -38,6 +38,7 @@ pg.connect(argv.pg_host, function(err, client, done) {
   `);
 
   function upsert(data, callback) {
+    console.log(data);
     client.query("SELECT 1 FROM scans WHERE ip=$1 AND service=$2", data.slice(0, 2), (err, result) => {
       if(result.rows.length > 0)
         client.query("UPDATE scans SET time=$3, suggestion=$4, factor=$5 WHERE ip=$1 AND service=$2", data, callback);
@@ -71,6 +72,10 @@ pg.connect(argv.pg_host, function(err, client, done) {
             uri: urls.getipintel+ip,
             time: true
         }, function(err, resp, body) {
+          if(!body) {
+            console.log("Getipintel empty body");
+            return;
+          }
           body = JSON.parse(body);
           let timeToProcess = resp.elapsedTime;
           let suggestion = body.result < 0.5 ? 'allow' : 'deny';
