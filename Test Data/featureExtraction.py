@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.feature_extraction.text import HashingVectorizer
 from scipy.sparse import coo_matrix, hstack
 import scipy.io
+from tempfile import TemporaryFile
 
 
 
@@ -111,5 +112,7 @@ X = hstack([X,ports])
 ###############################################################################
 # zapis do pliku
 ###############################################################################
-
+outfile = TemporaryFile()
+np.save("bots", bots)
 scipy.io.mmwrite("training_features", X)
+
