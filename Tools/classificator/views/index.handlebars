@@ -52,6 +52,9 @@
   <body>
     <div class="content">
       <h1>Adres: {{ ip }} (<span id="revdns">...</span>)</h1>
+      {{#each stats}}
+      {{@key}}: {{this}};
+      {{/each}}
       <div class="pure-g">
         <div class="pure-u-1-2 data">
           <pre id="whois">...</pre>
