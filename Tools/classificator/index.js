@@ -13,6 +13,25 @@ var pgclient;
 app.engine('handlebars', exphbs({defaultLayout: false}));
 app.set('view engine', 'handlebars');
 
+app.get('/stats/?*', (req, res) => {
+  pgclient.query("select bot, count(*) from adresy group by bot order by bot", (err, result) => {
+    res.send(
+      result.rows
+        .map((v) => {
+          if(v.bot === null)
+            return `niesklasyfikowane: ${v.count}`;
+          else if(v.bot === 1)
+            return `nie-boty: ${v.count}`;
+          else if(v.bot === 0)
+            return `niewiadomo: ${v.count}`;
+          else if(v.bot === -1)
+            return `boty: ${v.count}`;
+        })
+        .join("; ")
+    );
+  });
+});
+
 app.get('/classify/:class/:ip', (req, res) => {
   pgclient.query("update adresy set bot = $1 where ip = $2", [req.params.class, req.params.ip], (err, result) => {
     res.redirect("/");
