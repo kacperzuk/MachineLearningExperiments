@@ -1,2 +1,32 @@
-dangers = ["vps", "vpn", "hosting", "server", "bot", "proxy", "amazon", "sl-reverse", "softlayer"]
-evil_ports = [22, 80, 443, 465, 500, 587, 1723, 4500, 8080, 8888]
+dangers = { "vps" : 0.1 ,
+            "vpn" : 0.1,
+            "hosting" : 0.2,
+            "host" : 0.8,
+            "server" : 0.3,
+            "bot" : 0.1,
+            "proxy" : 0.2 ,
+            "amazon" : 0.2, 
+            "sl-reverse" : 0.2, 
+            "softlayer" : 0.2,
+            "tinmok" : 0.2, 
+            "contina" : 0.1, 
+            "securityframe.com" : 0.1,
+            "infobox.ru" : 0.1,
+            "cachednet llc" : 0.8,
+            "LLC Internet Tehnologii" : 0.1}
+
+evil_ports = {  22 : 0.4, 
+                80 : 0.5, 
+                443 : 0.5, 
+                465 : 0.5, 
+                500 : 0.5, 
+                587 : 0.5, 
+                1723 : 0.4, 
+                4500 : 0.6,
+                8000 : 0.5, 
+                8080 : 0.5,
+                8887 : 0.4,
+                8888 : 0.4
+                9030 : 0.3,
+                9050 : 0.3,
+                9051 : 0.3}

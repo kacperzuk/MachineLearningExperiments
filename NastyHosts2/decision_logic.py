@@ -11,7 +11,7 @@ def process(data):
 
     for danger in nasty_threats.dangers:
         if(danger in text.lower()):
-            factor *= 0.1
+            factor *= nasty_threats.dangers[danger]
 
     text = ""
 
@@ -20,7 +20,7 @@ def process(data):
 
     for danger in nasty_threats.dangers:
         if(danger in text):
-            factor *= 0.1
+            factor *= nasty_threats.dangers[danger]
 
     for blacklist in data ["dnsbl"]["blacklists"]:
         if(data ["dnsbl"]["blacklists"][blacklist]):
@@ -29,6 +29,8 @@ def process(data):
     if ("ports" in data["shodan"]["shodan"]):
         for port in data["shodan"]["shodan"]["ports"]:
             if (port in nasty_threats.evil_ports):
+                factor *= nasty_threats.evil_ports[port]
+            else:
                 factor *= 0.7
 
     factor = float("{:.4f}".format(factor))
