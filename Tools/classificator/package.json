@@ -12,6 +12,7 @@
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "minimist": "^1.2.0",
+    "pg": "^4.5.1",
     "whois-json": "github:mikemaccana/whois-json"
   }
 }

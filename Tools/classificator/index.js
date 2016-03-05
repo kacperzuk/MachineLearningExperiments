@@ -49,7 +49,7 @@ app.get('/revdns/:ip', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  pgclient.query("SELECT ip FROM niesklasyfikowane OFFSET random() * (select least(count(*), 20) from niesklasyfikowane) limit 1", (err, result) => {
+  pgclient.query("SELECT ip FROM niesklasyfikowane order by reports*sign(random()-0.5) OFFSET random() * (select least(count(*), 20) from niesklasyfikowane) limit 1", (err, result) => {
     var ip = result.rows[0].ip;
     res.render('index', {ip});
   });
