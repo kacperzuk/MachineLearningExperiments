@@ -52,23 +52,10 @@ app.get('/', (req, res) => {
   var order = "DESC";
   if(Math.random() >= 0.5)
     order = "ASC";
-  pgclient.query("SELECT bot, count(*) from adresy group by bot", (err, result) => {
-    var stats = {};
-    result.rows.forEach((r) => {
-      if(r.bot === null)
-        stats["niesklasyfikowane"] = r.count;
-      else if(r.bot === -1)
-        stats["boty"] = r.count;
-      else if(r.bot === 1)
-        stats["nie-boty"] = r.count;
-      else if(r.bot === 0)
-        stats["chuj wie"] = r.count;
-    });
-    pgclient.query(`SELECT ip, reports FROM niesklasyfikowane order by reports ${order} OFFSET random() * (select least(count(*), 20) from niesklasyfikowane) limit 1`, (err, result) => {
-      var ip = result.rows[0].ip;
-      var reports = result.rows[0].reports;
-      res.render('index', {ip, reports, stats});
-    });
+  pgclient.query(`SELECT ip, reports FROM niesklasyfikowane order by reports ${order} OFFSET random() * (select least(count(*), 20) from niesklasyfikowane) limit 1`, (err, result) => {
+    var ip = result.rows[0].ip;
+    var reports = result.rows[0].reports;
+    res.render('index', {ip, reports});
   });
 });
 
