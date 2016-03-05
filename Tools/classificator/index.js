@@ -14,7 +14,9 @@ app.engine('handlebars', exphbs({defaultLayout: false}));
 app.set('view engine', 'handlebars');
 
 app.get('/classify/:class/:ip', (req, res) => {
-
+  pgclient.query("update adresy set bot = $1 where ip = $2", [req.params.class, req.params.ip], (err, result) => {
+    res.redirect("/");
+  });
 });
 
 app.get('/shodan/:ip', (req, res) => {
@@ -47,7 +49,7 @@ app.get('/revdns/:ip', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  pgclient.query("SELECT ip FROM niesklasyfikowane OFFSET random() * (select count(*) from niesklasyfikowane) limit 1", (err, result) => {
+  pgclient.query("SELECT ip FROM niesklasyfikowane OFFSET random() * (select least(count(*), 20) from niesklasyfikowane) limit 1", (err, result) => {
     var ip = result.rows[0].ip;
     res.render('index', {ip});
   });
