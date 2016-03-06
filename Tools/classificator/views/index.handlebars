@@ -11,7 +11,7 @@
         font-family: sans-serif;
         letter-spacing: 0.01em;
         line-height: 1.6;
-        font-size: 12px;
+        font-size: 10px;
         color: #777;
       }
       h2 {
@@ -56,9 +56,8 @@
   <body>
     <div class="content">
       <h1>Adres: {{ ip }} (<span id="revdns">...</span>)</h1>
+      <span id="stats">...</span>
       <div class="pure-g">
-        <p id="stats" class="pure-u-1-2">...</p>
-        <p class="pure-u-1-2 text-right">Automatycznie banowane: <span id="autobans"></span></p>
         <div class="pure-u-1-2 data">
           <pre id="whois">...</pre>
         </div>
@@ -76,6 +75,7 @@
           <a href="/classify/1/{{ ip }}">Nie bot</a>
         </div>
       </div>
+      <p>Automatycznie banowane (robi autorefresh): <span id="autobans"></span></p>
     </div>
     <script>
       $(function() {
@@ -83,7 +83,10 @@
           "MNT-DEPO40",
           "QuickPacket",
           "Quantil",
-          "Secured Servers"
+          "Secured Servers",
+          "Amazon Technologies",
+          "Digital Ocean",
+          "OVH Hosting"
         ];
         $("#autobans").text(JSON.stringify(autobans));
         ["shodan", "revdns", "whois", "stats"].forEach(function(s) {
