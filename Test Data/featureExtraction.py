@@ -18,7 +18,7 @@ vectorizer = HashingVectorizer(analyzer='char',ngram_range=(3,3))
 outputIp = []
 hostnames = []
 bots = []
-openPorts = [22,25,80,443,8080]#otwarte porty jakie bierzemy pod uwage
+openPorts = https://api.shodan.io/shodan/ports#otwarte porty jakie bierzemy pod uwage
 ports = []
 newDict = [] #lista wszystkich whois
 #te petle tworza niezagniezdzone slowniki z whoisa. Z racji ze w whois moze byc 2 odpowiedzi
@@ -34,8 +34,8 @@ for val in samples:
 	whois = data["whois"]
 	dnsbl = data["dnsbl"]
 	blacklists = dnsbl["blacklists"]
-	shodan = data["shodan"]
-	shodan = shodan["shodan"]
+	shodanFeature = data["shodan"]
+	shodan = shodanFeature["shodan"]
 
 	#hostnames
 	revdns = data["revdns"]
@@ -51,8 +51,11 @@ for val in samples:
 	#ports
 	p = []
 	for x in openPorts:
-		if "ports" in shodan.keys():
-  			p.append(int(x  in shodan["ports"]))
+		if shodan is not None:
+			if "ports" in shodan.keys():
+  				p.append(int(x  in shodan["ports"]))
+ 			else:
+ 				p.append(0)
  		else:
  			p.append(0)	
  	ports.append(p)
