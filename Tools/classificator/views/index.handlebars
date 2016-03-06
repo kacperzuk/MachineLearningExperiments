@@ -76,6 +76,7 @@
         </div>
       </div>
       <p>Automatycznie banowane (robi autorefresh): <span id="autobans"></span></p>
+      <p>Automatycznie nie bot (robi autorefresh): <span id="autoapproves"></span></p>
     </div>
     <script>
       $(function() {
@@ -90,9 +91,21 @@
           "QuadraNet",
           "Leaseweb",
           "Vultr",
-          "Rackspace"
+          "Rackspace",
+          "Depo Data Center",
+          "http proxy",
+          "squid",
+          "hosting",
+          "infiumhost.com"
+        ];
+        var autoapproves = [
+          "telecom",
+          "viettel.com.vn",
+          "adsl",
+          "gprs"
         ];
         $("#autobans").text(JSON.stringify(autobans));
+        $("#autoapproves").text(JSON.stringify(autoapproves));
         ["shodan", "revdns", "whois", "stats"].forEach(function(s) {
           $.ajax({
               url: "/"+s+"/{{ ip }}",
@@ -102,6 +115,10 @@
                     return data.toLowerCase().indexOf(b.toLowerCase()) > -1;
                   })) {
                     location.href = "/classify/-1/{{ ip }}";
+                  } else if (autoapproves.some(function(b) {
+                    return data.toLowerCase().indexOf(b.toLowerCase()) > -1;
+                  })) {
+                    location.href = "/classify/1/{{ ip }}";
                   }
                 }
                 $("#"+s).text(data);
