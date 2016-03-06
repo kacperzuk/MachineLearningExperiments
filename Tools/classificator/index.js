@@ -69,9 +69,9 @@ app.get('/revdns/:ip', (req, res) => {
 
 app.get('/', (req, res) => {
   var order = "DESC";
-  if(Math.random() >= 0.5)
+  if(Math.random() >= 0.2) // prefer not reported
     order = "ASC";
-  pgclient.query(`SELECT ip, reports FROM niesklasyfikowane order by reports ${order} OFFSET random() * (select least(count(*), 20) from niesklasyfikowane) limit 1`, (err, result) => {
+  pgclient.query(`SELECT ip, reports FROM niesklasyfikowane order by reports ${order}, random() OFFSET random() * (select least(count(*), 500) from niesklasyfikowane) limit 1`, (err, result) => {
     var ip = result.rows[0].ip;
     var reports = result.rows[0].reports;
     res.render('index', {ip, reports});
