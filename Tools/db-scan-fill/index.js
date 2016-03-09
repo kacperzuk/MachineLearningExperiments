@@ -35,7 +35,8 @@ function processBatch(client, done) {
   getStats(client);
   client.query("SELECT ip FROM adresy WHERE bot is not null and not exists (select 1 from scans where scans.ip = adresy.ip) limit 10", (err, res) => {
     if(err) throw err;
-    if(res.rows.length < 0) {
+    if(res.rows.length == 0) {
+      console.log("DONE");
       done();
       return;
     }
