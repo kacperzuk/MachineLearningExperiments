@@ -7,7 +7,7 @@ const fs = require("fs");
 pg.connect(argv.pg_host, function(err, client, done) {
   if(err) throw err;
   console.log("Fetching data...");
-  client.query("SELECT scans.ip, bot = -1, result FROM scans INNER JOIN adresy ON adresy.ip = scans.ip AND adresy.bot is not null AND adresy.bot <> 0", (query_err, res) => {
+  client.query("SELECT scans.ip, bot = -1 as bot, result FROM scans INNER JOIN adresy ON adresy.ip = scans.ip AND adresy.bot is not null AND adresy.bot <> 0", (query_err, res) => {
     if(query_err) throw query_err;
     console.log("Fetched", res.rows.length, "rows.");
     console.log("Parsing data...");
