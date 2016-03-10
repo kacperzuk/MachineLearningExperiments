@@ -31,7 +31,7 @@ app.get("/:url", function(request, response){
       success.whois = null;
       response.send(success);
     } else if(limitReached(result)){
-      console.log("Limit reached for ", url);
+      console.log("Whois limit reached for ", url);
       failure.reason = result;
       response.status(400);
       response.send(failure);
@@ -47,4 +47,4 @@ app.get("/:url", function(request, response){
   });
 });
 app.listen(4001);
-console.log("server running on 4001");
+console.log("Whois scanner running on 4001");

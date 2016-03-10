@@ -20,7 +20,6 @@ app.get("/:ip", function(request, response){
       timeout: 2000
     });
     req.on('timeout', () => {
-      console.log("Timeout on", blacklist);
       result.blacklists[blacklist] = false;
     });
     req.on('message', (err, ans) => {
@@ -28,7 +27,6 @@ app.get("/:ip", function(request, response){
       if(err) listed = true;
       if(ans && ans.answer && ans.answer.length > 0) listed = true;
       result.blacklists[blacklist] = listed;
-      console.log("Success on", blacklist);
     });
     req.on('end', () => {
       callback();
@@ -40,4 +38,4 @@ app.get("/:ip", function(request, response){
   });
 });
 app.listen(4002);
-console.log("Server Running on 4002");
+console.log("DNSBL Scanner running on 4002");
