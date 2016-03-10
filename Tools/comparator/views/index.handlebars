@@ -87,6 +87,26 @@
         </tr>
       </tbody>
     </table>
+    <table id="perc_stats">
+      <thead>
+        <tr>
+          {{#each columns}}
+          <th>{{this}}</th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+        {{#each perc_stats}}
+        <td>
+          {{#each stats}}
+          {{@key}}: {{this}}<br>
+          {{/each}}
+        </td>
+        {{/each}}
+        </tr>
+      </tbody>
+    </table>
     <table id="table">
       <thead>
         <tr>

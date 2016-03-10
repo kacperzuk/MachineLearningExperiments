@@ -64,10 +64,24 @@ function processRequest(addresses_table, results_table, req, res) {
       const new_stats = columns.map((col) => {
         return { name: col, stats: stats[col]};
       });
-      res.render('index', {data, columns, stats:new_stats});
+      const perc_stats = new_stats.map((stat) => {
+        const t = stat.stats.total || 1;
+        const p = (d) => (100.0*d/t).toFixed(2)+"%";
+
+        return {
+          ip: stat.ip,
+          stats: {
+            false_bots: p(stat.stats.false_bots),
+            false_nonbots: p(stat.stats.false_nonbots),
+            true_bots: p(stat.stats.true_bots),
+            true_nonbots: p(stat.stats.true_nonbots)
+          }
+        };
+      });
+
+      res.render('index', {data, columns, stats: new_stats, perc_stats});
     });
   });
-
 }
 
 app.get('/truncated', (req, res) => {
