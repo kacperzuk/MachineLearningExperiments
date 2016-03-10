@@ -70,6 +70,6 @@ app.get('/', (req, res) => {
 pg.connect(argv.pg_host, function(err, client, done) {
   if(err) throw err;
   pgclient = client;
-  app.listen(8000);
-  console.log("Ready on 8000");
+  app.listen(8001);
+  console.log("Ready on 8001");
 });
