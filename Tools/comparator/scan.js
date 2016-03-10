@@ -103,7 +103,12 @@ function processBatch(done) {
         promises.push(services[argv.service](row.ip));
       });
       Promise.all(promises).then(() => {
-        processBatch(done);
+        if(service == "getipintel")
+          setTimeout(() => {
+            processBatch(done);
+          }, 1000*70);
+        else
+          processBatch(done);
       });
     }
   });
