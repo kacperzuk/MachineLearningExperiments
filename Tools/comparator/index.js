@@ -28,7 +28,8 @@ function processRequest(addresses_table, results_table, req, res) {
       false_bots: 0,
       false_nonbots: 0,
       true_bots: 0,
-      true_nonbots: 0
+      true_nonbots: 0,
+      total: 0
     };
   });
   pgclient.query(`SELECT ip, bot = -1 as bot FROM ${addresses_table} as adresy WHERE EXISTS(SELECT 1 FROM ${results_table} as results WHERE results.ip = adresy.ip) and bot in (-1,1)`, (err, result) => {
@@ -52,6 +53,7 @@ function processRequest(addresses_table, results_table, req, res) {
         } else if(!row.bot && !row.correct) {
           stats[row.service].false_nonbots += 1;
         }
+        stats[row.service].total += 1;
         data[row.ip]["services"][row.service] = row;
       });
 
