@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <title> Hi </title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .correct-false .result {
+        color: #aa0000;
+      }
+
+      .correct-true .result {
+        color: #00aa00;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+    {{#each data}}
+    <tr>
+      <td>
+        IP: {{@key}}<br>
+        {{#if bot}}BOT{{else}}NIE BOT{{/if}}
+      </td>
+      {{#each services}}
+      <td class="correct-{{correct}}">
+        Service: {{@key}}<br>
+        Time to process: {{time}}ms<br>
+        Result: <span class="result">{{suggestion}}</span> ({{factor}})
+      </td>
+      {{/each}}
+    </tr>
+    {{/each}}
+    </table>
+  </body>
+</html>
