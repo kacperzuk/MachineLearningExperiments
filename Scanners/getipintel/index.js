@@ -16,7 +16,6 @@ app.get("/:ip", function (request, response){
       });
     res.on("end", function(){
       buffer = JSON.parse(buffer.toString());
-      console.log(buffer);
       var a = buffer.result-0;
       if(buffer.status == "success"){
         result.status = "ok";

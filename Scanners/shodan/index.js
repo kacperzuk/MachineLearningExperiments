@@ -28,9 +28,11 @@ app.get("/:ip", function(request, response){
       }
     });
   }).on("error", function(error){
+    console.log("SHODAN ERROR");
     result.shodan = error.message;
     response.send(result);
   }).setTimeout(5000, function(){
+    console.log("SHODAN TIMEOUT");
     result.status = "ok";
     result.shodan = null;
     response.send(result);
