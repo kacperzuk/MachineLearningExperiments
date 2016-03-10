@@ -19,7 +19,7 @@ app.engine('handlebars', exphbs({
 
 app.set('view engine', 'handlebars');
 
-app.get('/', (req, res) => {
+function processRequest(addresses_table, results_table, req, res) {
   const data = {};
   const columns = [ "getipintel", "nh1", "nh2", "nhml" ];
   const stats = {};
@@ -31,13 +31,13 @@ app.get('/', (req, res) => {
       true_nonbots: 0
     };
   });
-  pgclient.query("SELECT ip, bot = -1 as bot FROM adresy WHERE EXISTS(SELECT 1 FROM results WHERE results.ip = adresy.ip) and bot in (-1,1)", (err, result) => {
+  pgclient.query(`SELECT ip, bot = -1 as bot FROM ${addresses_table} as adresy WHERE EXISTS(SELECT 1 FROM ${results_table} as results WHERE results.ip = adresy.ip) and bot in (-1,1)`, (err, result) => {
     if(err) throw err;
     result.rows.forEach((row) => {
       if(data[row.ip] === undefined) data[row.ip] = {services: {}};
       data[row.ip].bot = row.bot;
     });
-    pgclient.query("SELECT * FROM results ORDER BY ip", (err, result) => {
+    pgclient.query(`SELECT * FROM ${results_table} results ORDER BY ip`, (err, result) => {
       if(err) throw err;
       result.rows.forEach((row) => {
         if(data[row.ip] === undefined) return;
@@ -65,6 +65,15 @@ app.get('/', (req, res) => {
       res.render('index', {data, columns, stats:new_stats});
     });
   });
+
+}
+
+app.get('/truncated', (req, res) => {
+  processRequest("adresy_truncated", "results_truncated", req, res);
+});
+
+app.get('/', (req, res) => {
+  processRequest("adresy", "results", req, res);
 });
 
 pg.connect(argv.pg_host, function(err, client, done) {
