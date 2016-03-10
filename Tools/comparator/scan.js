@@ -42,7 +42,8 @@ const services = {
     });
   },
   getipintel: (ip) => {
-    let url = "http://check.getipintel.net/check.php?contact=xyz@gmail.com&format=json&flags=b&ip=";
+    let contact = argv.contact || "mail@example.net";
+    let url = `http://check.getipintel.net/check.php?contact=${contact}&format=json&flags=b&ip=`;
     return new Promise((resolve) => {
       request({
         uri: url+ip,
