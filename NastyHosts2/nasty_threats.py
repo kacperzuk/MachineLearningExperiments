@@ -13,7 +13,10 @@ dangers = { "vps" : 0.1 ,
             "securityframe.com" : 0.1,
             "infobox.ru" : 0.1,
             "cachednet llc" : 0.8,
-            "LLC Internet Tehnologii" : 0.1}
+            "LLC Internet Tehnologii" : 0.1,
+            "pinspb.ru" : 0.1,
+            "depo40" : 0.01,
+            "depo data center" : 0.01}
 
 evil_ports = {  22 : 0.4, 
                 80 : 0.5, 
@@ -26,7 +29,7 @@ evil_ports = {  22 : 0.4,
                 8000 : 0.5, 
                 8080 : 0.5,
                 8887 : 0.4,
-                8888 : 0.4
+                8888 : 0.4,
                 9030 : 0.3,
                 9050 : 0.3,
                 9051 : 0.3}

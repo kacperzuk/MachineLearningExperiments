@@ -37,3 +37,4 @@ app.get("/:ip", function(request, response){
     sended = true;
   });
 }).listen(4004);
+console.log("Server Running on 4004");
