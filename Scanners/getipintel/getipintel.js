@@ -5,7 +5,7 @@ var express = require("express");
 var app = express();
 
 app.get("/:ip", function (request, response){
-  
+
   var ip = request.params.ip;
   var options = { hostname: "check.getipintel.net", path:"/check.php?ip="+ip+"&contact=xyz@gmail.com&format=json&flags=b"};
   var result = {"status":"tryagain", "allow": false};
@@ -20,7 +20,7 @@ app.get("/:ip", function (request, response){
       var a = buffer.result-0;
       if(buffer.status == "success"){
         result.status = "ok";
-        if(a < 0.5){
+        if(a < 0.05){
           result.allow = true;
         }
         response.send(result);
