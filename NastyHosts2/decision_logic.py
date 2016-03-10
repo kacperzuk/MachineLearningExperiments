@@ -25,13 +25,13 @@ def process(data):
     for blacklist in data ["dnsbl"]["blacklists"]:
         if(data ["dnsbl"]["blacklists"][blacklist]):
             factor *= 0.8
-
-    if ("ports" in data["shodan"]["shodan"]):
-        for port in data["shodan"]["shodan"]["ports"]:
-            if (port in nasty_threats.evil_ports):
-                factor *= nasty_threats.evil_ports[port]
-            else:
-                factor *= 0.7
+    if (data["shodan"]["shodan"]):
+        if ("ports" in data["shodan"]["shodan"]):
+            for port in data["shodan"]["shodan"]["ports"]:
+                if (port in nasty_threats.evil_ports):
+                    factor *= nasty_threats.evil_ports[port]
+                else:
+                    factor *= 0.7
 
     factor = float("{:.4f}".format(factor))
 
