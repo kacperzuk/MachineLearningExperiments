@@ -53,7 +53,7 @@ app.get('/whois/:ip', (req, res) => {
     if(err)
       res.send(err);
     else
-      res.send(JSON.stringify(result, null, 2));
+      res.send(JSON.stringify(result.reverse(), null, 2));
   });
 });
 
@@ -68,13 +68,9 @@ app.get('/revdns/:ip', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  var order = "DESC";
-  if(Math.random() >= 0.2) // prefer not reported
-    order = "ASC";
-  pgclient.query(`SELECT ip, reports FROM niesklasyfikowane order by reports ${order}, random() OFFSET random() * (select least(count(*), 500) from niesklasyfikowane) limit 1`, (err, result) => {
+  pgclient.query(`SELECT ip FROM niesklasyfikowane order by random() limit 1`, (err, result) => {
     var ip = result.rows[0].ip;
-    var reports = result.rows[0].reports;
-    res.render('index', {ip, reports});
+    res.render('index', {ip});
   });
 });
 
