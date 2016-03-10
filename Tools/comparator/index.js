@@ -32,12 +32,18 @@ function processRequest(addresses_table, results_table, req, res) {
       total: 0
     };
   });
+  const data_stats = { bots: 0, nonbots: 0 };
   pgclient.query(`SELECT ip, bot = -1 as bot FROM ${addresses_table} as adresy WHERE EXISTS(SELECT 1 FROM ${results_table} as results WHERE results.ip = adresy.ip) and bot in (-1,1)`, (err, result) => {
     if(err) throw err;
     result.rows.forEach((row) => {
       if(data[row.ip] === undefined) data[row.ip] = {services: {}};
       data[row.ip].bot = row.bot;
+      if(row.bot) data_stats.bots += 1;
+      else data_stats.nonbots += 1;
     });
+    data_stats.total = data_stats.bots + data_stats.nonbots;
+    data_stats.perc_bots = parseInt(100*data_stats.bots/data_stats.total)+"%";
+    data_stats.perc_nonbots = parseInt(100*data_stats.nonbots/data_stats.total)+"%";
     pgclient.query(`SELECT * FROM ${results_table} results ORDER BY ip`, (err, result) => {
       if(err) throw err;
       result.rows.forEach((row) => {
@@ -79,7 +85,7 @@ function processRequest(addresses_table, results_table, req, res) {
         };
       });
 
-      res.render('index', {data, columns, stats: new_stats, perc_stats});
+      res.render('index', {data, columns, stats: new_stats, perc_stats, data_stats});
     });
   });
 }
