@@ -40,3 +40,4 @@ app.get("/:ip", function(request, response){
   });
 });
 app.listen(4002);
+console.log("DNSBL Scanner running on 4002");

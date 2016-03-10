@@ -47,4 +47,4 @@ app.get("/:url", function(request, response){
   });
 });
 app.listen(4001);
-console.log("server running on 4001");
+console.log("Whois scanner running on 4001");

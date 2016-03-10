@@ -32,3 +32,4 @@ app.get("/:ip", function (request, response){
   });
 });
 app.listen(4003);
+console.log("getipintel Scanner running on 4003");
