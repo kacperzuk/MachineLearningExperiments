@@ -29,7 +29,7 @@ def process(data):
     if ("ports" in data["shodan"]["shodan"]):
         for port in data["shodan"]["shodan"]["ports"]:
             if (port in nasty_threats.evil_ports):
-                factor *= 0.7
+                factor *= nasty_threats.evil_ports[port]
             else:
                 factor *= 0.7
 
