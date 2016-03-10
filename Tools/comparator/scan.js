@@ -53,14 +53,21 @@ const services = {
           process.exit(3);
         }
         body = JSON.parse(body);
-        if(body.status != 'success') {
-          console.log(body);
-          process.exit(2);
-        }
         let timeToProcess = resp.elapsedTime;
-        let suggestion = body.result < 0.5 ? 'allow' : 'deny';
-        let factor = 1 - parseFloat(body.result);
-        upsert([ip, 'getipintel', timeToProcess, suggestion, factor], resolve);
+        if(body.status != 'success') {
+          if(body.result != '-3') { // just incorrect address, assume that's fine
+            console.log(body);
+            process.exit(2);
+          } else {
+            let suggestion = 'allow';
+            let factor = 1;
+            upsert([ip, 'getipintel', timeToProcess, suggestion, factor], resolve);
+          }
+        } else {
+          let suggestion = body.result < 0.5 ? 'allow' : 'deny';
+          let factor = 1 - parseFloat(body.result);
+          upsert([ip, 'getipintel', timeToProcess, suggestion, factor], resolve);
+        }
       });
     });
   },
