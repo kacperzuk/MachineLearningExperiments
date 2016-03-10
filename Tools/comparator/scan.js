@@ -103,12 +103,14 @@ function processBatch(done) {
         promises.push(services[argv.service](row.ip));
       });
       Promise.all(promises).then(() => {
-        if(service == "getipintel")
+        if(argv.service == "getipintel") {
+          console.log("GetIPIntel, delaying next batch for 70 sec");
           setTimeout(() => {
             processBatch(done);
           }, 1000*70);
-        else
+        } else {
           processBatch(done);
+        }
       });
     }
   });
