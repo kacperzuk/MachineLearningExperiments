@@ -37,7 +37,8 @@ function processRequest(addresses_table, results_table, req, res) {
     const data_stats = { bots: 0, nonbots: 0 };
     pgclient.query(`SELECT
       case when hidden then concat('hidden-', substring(md5(ip) for 12))
-      else ip end,
+      else ip end as name,
+      ip,
       bot = -1 as bot
     FROM ${addresses_table} as adresy
     WHERE EXISTS(SELECT 1 FROM ${results_table} as results WHERE results.ip = adresy.ip) and bot in (-1,1)`, (err, result) => {
@@ -45,6 +46,8 @@ function processRequest(addresses_table, results_table, req, res) {
       result.rows.forEach((row) => {
         if(data[row.ip] === undefined) data[row.ip] = {services: {}};
         data[row.ip].bot = row.bot;
+        data[row.ip].name = row.name;
+
         if(row.bot) data_stats.bots += 1;
         else data_stats.nonbots += 1;
       });
