@@ -35,7 +35,12 @@ function processRequest(addresses_table, results_table, req, res) {
       };
     });
     const data_stats = { bots: 0, nonbots: 0 };
-    pgclient.query(`SELECT ip, bot = -1 as bot FROM ${addresses_table} as adresy WHERE EXISTS(SELECT 1 FROM ${results_table} as results WHERE results.ip = adresy.ip) and bot in (-1,1)`, (err, result) => {
+    pgclient.query(`SELECT
+      case when hidden then concat('hidden-', substring(md5(ip) for 12))
+      else ip end,
+      bot = -1 as bot
+    FROM ${addresses_table} as adresy
+    WHERE EXISTS(SELECT 1 FROM ${results_table} as results WHERE results.ip = adresy.ip) and bot in (-1,1)`, (err, result) => {
       if(err) throw err;
       result.rows.forEach((row) => {
         if(data[row.ip] === undefined) data[row.ip] = {services: {}};
