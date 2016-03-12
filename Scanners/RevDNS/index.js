@@ -30,4 +30,4 @@ app.get("/:ip", function(request, response){
 });
 
 app.listen(4000);
-console.log("Server Running on 4000");
+console.log("RevDNS scanner Running on 4000");

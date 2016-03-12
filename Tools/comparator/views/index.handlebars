@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <title> Hi </title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <script type="text/javascript" src="https://cdn.rawgit.com/tristen/tablesort/gh-pages/tablesort.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .correct-false .result {
+        color: #aa0000;
+      }
+
+      .correct-true .result {
+        color: #00aa00;
+      }
+
+      html, body {
+        padding: 1em;
+      }
+
+      table {
+        margin: 1em auto;
+      }
+
+      table td {
+        border: 1px dashed black;
+        padding: 1em;
+      }
+
+      p { text-align: center; }
+
+
+      /* default from tablesort */
+      th.sort-header::-moz-selection { background:transparent; }
+      th.sort-header::selection      { background:transparent; }
+      th.sort-header {
+        cursor:pointer;
+      }
+      th.sort-header::-moz-selection,
+      th.sort-header::selection {
+        background:transparent;
+      }
+      table th.sort-header:after {
+        content:'';
+        float:right;
+        margin-top:7px;
+        border-width:0 4px 4px;
+        border-style:solid;
+        border-color:#404040 transparent;
+        visibility:hidden;
+      }
+      table th.sort-header:hover:after {
+        visibility:visible;
+      }
+      table th.sort-up:after,
+      table th.sort-down:after,
+      table th.sort-down:hover:after {
+        visibility:visible;
+        opacity:0.4;
+      }
+      table th.sort-up:after {
+        border-bottom:none;
+        border-width:4px 4px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Kliknij header columny by posortować po skuteczności. Np. by najpierw wyświetlić adresy, dla których nh2 się pomyliło, kliknij header nh2.</p>
+    <table id="stats">
+      <thead>
+        <tr>
+          {{#each columns}}
+          <th>{{this}}</th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+        {{#each stats}}
+        <td>
+          {{#each stats}}
+          {{@key}}: {{this}}<br>
+          {{/each}}
+        </td>
+        {{/each}}
+        </tr>
+      </tbody>
+    </table>
+    <table id="perc_stats">
+      <thead>
+        <tr>
+          {{#each columns}}
+          <th>{{this}}</th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+        {{#each perc_stats}}
+        <td>
+          {{#each stats}}
+          {{@key}}: {{this}}<br>
+          {{/each}}
+        </td>
+        {{/each}}
+        </tr>
+      </tbody>
+    </table>
+    <p>Data stats: {{data_stats.bots}} ({{data_stats.perc_bots}}) bots, {{data_stats.nonbots}} ({{data_stats.perc_nonbots}}) nonbots, {{data_stats.total}} total</p>
+    <table id="table">
+      <thead>
+        <tr>
+          <th>IP &amp; category</th>
+          {{#each columns}}
+          <th>{{this}}</th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+      {{#each data}}
+      <tr>
+        <td>
+          IP: {{name}}<br>
+          {{#if bot}}BOT{{else}}NIE BOT{{/if}}
+        </td>
+        {{#each services}}
+        <td class="correct-{{correct}}" data-sort="{{#if correct}}1{{else}}0{{/if}}">
+          Service: {{service}}<br>
+          Time to process: {{time}}ms<br>
+          Result: <span class="result">{{suggestion}}</span> ({{factor}})
+        </td>
+        {{/each}}
+      </tr>
+      {{/each}}
+      </tbody>
+    </table>
+
+    <script>
+    new Tablesort(document.getElementById('table'));
+    </script>
+  </body>
+</html>
