@@ -90,7 +90,8 @@ function processRequest(addresses_table, results_table, req, res) {
               false_bots: p(stat.stats.false_bots),
               false_nonbots: p(stat.stats.false_nonbots),
               true_bots: p(stat.stats.true_bots),
-              true_nonbots: p(stat.stats.true_nonbots)
+              true_nonbots: p(stat.stats.true_nonbots),
+              overall_accuracy: p(stat.stats.true_bots + stat.stats.true_nonbots)
             }
           };
         });
