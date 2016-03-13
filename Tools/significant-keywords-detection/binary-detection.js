@@ -14,7 +14,8 @@ const is_significant = function(x, y) {
   }
 
   if(x1y0 > 0.01*x1y1 && x1y1 > 0.01*x1y0) return 0;
-  return 1;
+  if(x1y1 > x1y0) return 1;
+  return -1;
 }
 
 pg.connect(argv.pg_host, function(err, client, done) {
@@ -28,29 +29,59 @@ pg.connect(argv.pg_host, function(err, client, done) {
     console.warn("Data parsed, extracting keywords...");
     const keywords = extract_keywords(raw_x);
     console.warn("Keywords to process:", keywords.length);
-    const significant_keywords = new Set();
+    const bot_significant_keywords = new Set();
+    const nonbot_significant_keywords = new Set();
     keywords.forEach((key, i, ar) => {
       process.stderr.write(`\rProgress: ${i}/${ar.length}     `);
       let start = -(Date.now());
       const x = is_keyword_in_data(key, raw_x);
       const count = x.reduce((p, c) => p += c > 0, 0);
-      if(count > 5 &&
-         is_significant(x, y)) {
-
-        significant_keywords.add(key);
+      if(count > 5) {
+        let s = is_significant(x,y);
+        if(s==1)
+          bot_significant_keywords.add(key);
+        else if(s==-1)
+          nonbot_significant_keywords.add(key);
       }
     });
     process.stderr.write("\n");
+    const bot_reduced_keywords = [];
+    bot_significant_keywords.forEach((candidate) => {
+      if(Array.from(bot_significant_keywords).every((keyword) => candidate.indexOf(keyword) === -1 || candidate === keyword))
+        bot_reduced_keywords.push(candidate);
+    });
+    const nonbot_reduced_keywords = [];
+    nonbot_significant_keywords.forEach((candidate) => {
+      if(Array.from(nonbot_significant_keywords).every((keyword) => candidate.indexOf(keyword) === -1 || candidate === keyword))
+        nonbot_reduced_keywords.push(candidate);
+    });
+
+    const significant_keywords = new Set();
     const reduced_keywords = [];
+    bot_significant_keywords.forEach((v) => significant_keywords.add(v));
+    nonbot_significant_keywords.forEach((v) => significant_keywords.add(v));
+
     significant_keywords.forEach((candidate) => {
       if(Array.from(significant_keywords).every((keyword) => candidate.indexOf(keyword) === -1 || candidate === keyword))
         reduced_keywords.push(candidate);
     });
     process.stdout.write("#-*- coding: utf8 -*-\n\n");
-    process.stdout.write("significant_keywords = ");
-    process.stdout.write(JSON.stringify(Array.from(significant_keywords).sort())+"\n");
-    process.stdout.write("significant_keywords_reduced = ");
-    process.stdout.write(JSON.stringify(reduced_keywords.sort())+"\n");
+    if(!argv.split) {
+      process.stdout.write("significant_keywords = ");
+      process.stdout.write(JSON.stringify(Array.from(significant_keywords).sort())+"\n");
+      process.stdout.write("significant_keywords_reduced = ");
+      process.stdout.write(JSON.stringify(reduced_keywords.sort())+"\n");
+    } else {
+      process.stdout.write("bot_significant_keywords = ");
+      process.stdout.write(JSON.stringify(Array.from(bot_significant_keywords).sort())+"\n");
+      process.stdout.write("bot_significant_keywords_reduced = ");
+      process.stdout.write(JSON.stringify(bot_reduced_keywords.sort())+"\n");
+      process.stdout.write("nonbot_significant_keywords = ");
+      process.stdout.write(JSON.stringify(Array.from(nonbot_significant_keywords).sort())+"\n");
+      process.stdout.write("nonbot_significant_keywords_reduced = ");
+      process.stdout.write(JSON.stringify(nonbot_reduced_keywords.sort())+"\n");
+
+    }
 
     console.warn("Number of significant keywords:", Array.from(significant_keywords).length);
     console.warn("Number of significant keywords (reduced):", reduced_keywords.length);
