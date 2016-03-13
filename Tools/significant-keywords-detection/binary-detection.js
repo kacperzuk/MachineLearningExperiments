@@ -5,15 +5,15 @@
 const pg = require("pg");
 const argv = require("minimist")(process.argv.slice(2));
 
-const is_significant = function(x, y, keyword) {
+const is_significant = function(x, y) {
   let x1y0 = 0, x1y1 = 0;
 
   for(let i = 0; i < x.length; i++) {
       x1y0 += x[i] > 0 && y[i] == 0;
       x1y1 += x[i] > 0 && y[i] == 1;
-      if(x1y0 > 0 && x1y1 > 0) return 0;
   }
 
+  if(x1y0 > 0.01*x1y1 && x1y1 > 0.01*x1y0) return 0;
   return 1;
 }
 
