@@ -1,8 +1,9 @@
 dangers = { "vps" : 0.1 ,
             "vpn" : 0.1,
-            "hosting" : 0.2,
+            "hosting" : 0.1,
             "host" : 0.8,
             "server" : 0.3,
+            "vserver" : 0.2,
             "bot" : 0.1,
             "proxy" : 0.2 ,
             "amazon" : 0.2,
@@ -17,7 +18,9 @@ dangers = { "vps" : 0.1 ,
             "pinspb.ru" : 0.1,
             "depo40" : 0.01,
             "depo data center" : 0.01,
-            "alpha geek solutions" : 0.1}
+            "alpha geek solutions" : 0.1,
+            "sentris" : 0.1,
+            "snl" : 0.1}
 
 
 evil_ports = {  22 : 0.6, 

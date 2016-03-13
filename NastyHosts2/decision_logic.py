@@ -19,7 +19,7 @@ def process(data):
             text += revdns_data
 
     for danger in nasty_threats.dangers:
-        if(danger in text):
+        if(danger in text.lower()):
             factor *= nasty_threats.dangers[danger]
 
     for blacklist in data ["dnsbl"]["blacklists"]:
