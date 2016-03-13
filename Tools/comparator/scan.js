@@ -65,7 +65,7 @@ const services = {
             upsert([ip, 'getipintel', timeToProcess, suggestion, factor], resolve);
           }
         } else {
-          let suggestion = body.result > 0.95 ? 'allow' : 'deny';
+          let suggestion = body.result < 0.95 ? 'allow' : 'deny';
           let factor = 1 - parseFloat(body.result);
           upsert([ip, 'getipintel', timeToProcess, suggestion, factor], resolve);
         }
