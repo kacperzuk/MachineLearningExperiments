@@ -21,7 +21,7 @@ app.set('view engine', 'handlebars');
 
 function processRequest(addresses_table, results_table, req, res) {
   const data = {};
-  pgclient.query("SELECT DISTINCT service FROM results", (err, result) => {
+  pgclient.query("SELECT DISTINCT service FROM results order by service", (err, result) => {
     if(err) throw err;
     const columns = result.rows.map((v) => v.service);
     const stats = {};
