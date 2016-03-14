@@ -65,8 +65,8 @@ const services = {
             upsert([ip, 'getipintel', timeToProcess, suggestion, factor], resolve);
           }
         } else {
-          let suggestion = body.result < 0.05 ? 'allow' : 'deny';
           let factor = 1 - parseFloat(body.result);
+          let suggestion = factor < 0.01 ? 'deny' : 'allow';
           upsert([ip, 'getipintel', timeToProcess, suggestion, factor], resolve);
         }
       });
@@ -80,6 +80,8 @@ const services = {
 
 function upsert(data, callback) {
   console.log(data);
+  if(argv.as)
+    data[1] = argv.as;
   client.query("SELECT 1 FROM results WHERE ip=$1 AND service=$2", data.slice(0, 2), (err, result) => {
     if(result.rows.length > 0)
       client.query("UPDATE results SET time=$3, suggestion=$4, factor=$5 WHERE ip=$1 AND service=$2", data, callback);
@@ -92,7 +94,7 @@ function getStats() {
   client.query(`SELECT
       (SELECT COUNT(*) FROM results WHERE service = $1) as done,
       (SELECT COUNT(*) FROM adresy WHERE bot IN (1,-1)) as total
-  `, [argv.service], (err, res) => {
+  `, [argv.as || argv.service], (err, res) => {
     if(err) throw err;
     console.log(res.rows);
   });
@@ -101,7 +103,7 @@ function getStats() {
 function processBatch(done) {
   console.log("Using service", argv.service);
   getStats();
-  client.query("SELECT ip FROM adresy WHERE bot IN (1,-1) AND NOT EXISTS (SELECT 1 FROM results WHERE results.ip = adresy.ip AND service = $1) LIMIT 15", [argv.service], (err, res) => {
+  client.query("SELECT ip FROM adresy WHERE bot IN (1,-1) AND NOT EXISTS (SELECT 1 FROM results WHERE results.ip = adresy.ip AND service = $1) LIMIT 15", [argv.as || argv.service], (err, res) => {
     if(err) throw err;
     if(res.rows.length == 0) {
       done();

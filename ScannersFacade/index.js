@@ -72,7 +72,8 @@ facade.get("/:ip", (req, res) => {
             resolve();
           } else {
             console.log("Retry after", scanner, "from", host, "returned", result)
-            removeHost();
+            if(!process.env.LOCALHOST_ONLY)
+              removeHost();
             let r = http.request(dest, handleResp);
             r.on('error', handleFail);
             r.end();
