@@ -5,9 +5,10 @@ def process(data):
     factor = 1
     text = ""
 
-    for whois_data in data["whois"]["whois"]:
-        for value in whois_data["data"].values():
-            text += value
+    if data["whois"]["whois"]:
+      for whois_data in data["whois"]["whois"]:
+          for value in whois_data["data"].values():
+              text += value
 
     for danger in nasty_threats.dangers:
         if(danger in text.lower()):
@@ -39,5 +40,5 @@ def process(data):
         result = {"suggestion" : "deny", "factor" : factor}
     else:
         result = {"suggestion" : "allow", "factor" : factor}
-    
+
     return result
