@@ -7,13 +7,71 @@
     <script type="text/javascript" src="https://cdn.rawgit.com/tristen/tablesort/gh-pages/tablesort.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      .correct-false .result {
-        color: #aa0000;
-      }
-
-      .correct-true .result {
-        color: #00aa00;
-      }
+        
+        @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
+        
+        body{
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .comparison{
+            text-align: center;
+        }
+        
+        .comparison .ip{
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .comparison .rating{
+            font-size: 20px;
+            text-align: center;
+            font-weight: 300;
+            color: #FFF;
+            background: #B91A1A;
+        }
+        
+        .comparison .rating.clean{
+            background: #40B91A;
+        }
+        
+        .comparison .service{
+            text-align: center;
+        }
+        
+        .comparison .service .service-name{
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .comparison .service .time{
+            font-size: 15px;
+            font-weight: 300;
+        }
+        
+        .comparison .service .result{
+            font-size: 15px;
+            color: #8C8C8C;
+            padding: 5px 0;
+            font-weight: 300;
+        }
+        
+        .comparison .service .result span{
+            font-weight: 400;
+            font-size: 20px;
+            color: #aa0000;
+        }
+        
+        .comparison .service.correct .result span{
+            color: #00aa00;
+        }
+        
+        .comparison .service .na{
+            font-weight: 300;
+            font-size: 30px;
+            color: #DEDEDE;
+        }
 
       html, body {
         padding: 1em;
@@ -108,7 +166,7 @@
       </tbody>
     </table>
     <p>Data stats: {{data_stats.bots}} ({{data_stats.perc_bots}}) bots, {{data_stats.nonbots}} ({{data_stats.perc_nonbots}}) nonbots, {{data_stats.total}} total</p>
-    <table id="table">
+    <table id="table" class="comparison">
       <thead>
         <tr>
           <th>IP &amp; category</th>
@@ -121,14 +179,24 @@
       {{#each data}}
       <tr>
         <td>
-          IP: {{name}}<br>
-          {{#if bot}}BOT{{else}}NIE BOT{{/if}}
+          <div class="ip">{{name}}</div>
+          {{#if bot}}
+            <div class="rating">BOT</div>
+          {{else}}
+            <div class="rating clean">NIE BOT</div>
+          {{/if}}
         </td>
         {{#each services}}
-        <td class="correct-{{correct}}" data-sort="{{#if correct}}1{{else}}0{{/if}}">
-          Service: {{service}}<br>
-          Time to process: {{time}}ms<br>
-          Result: <span class="result">{{suggestion}}</span> ({{factor}})
+        <td class="service {{#if correct}}correct{{/if}}" data-sort="{{#if correct}}1{{else}}0{{/if}}">
+            {{#if suggestion}}
+                <div class="service-name">{{service}}</div>
+                <div class="result">
+                    <span>{{suggestion}}</span> ({{factor}})
+                </div>
+                <div class="time" title="Time to process">{{time}} ms</div>
+            {{else}}
+                <div class="na">N/A</div>
+            {{/if}}
         </td>
         {{/each}}
       </tr>
