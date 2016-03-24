@@ -23,9 +23,6 @@ def process(data):
         if(danger in text.lower()):
             factor *= nasty_threats.dangers[danger]
 
-    for blacklist in data ["dnsbl"]["blacklists"]:
-        if(data ["dnsbl"]["blacklists"][blacklist]):
-            factor *= 0.8
     if (data["shodan"]["shodan"]):
         if ("ports" in data["shodan"]["shodan"]):
             for port in data["shodan"]["shodan"]["ports"]:
