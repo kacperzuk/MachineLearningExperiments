@@ -26,6 +26,21 @@ const services = {
       });
     });
   },
+  nhml: (ip) => {
+    const url = argv.nhml_url || "http://127.0.0.1:6000/";
+    return new Promise((resolve) => {
+      request({
+        uri: url+ip,
+        time: true
+      }, function(err, resp, body) {
+        body = JSON.parse(body);
+        let timeToProcess = resp.elapsedTime;
+        let suggestion = body.suggestion;
+        let factor = body.factor;
+        upsert([ip, 'nhml', timeToProcess, suggestion, factor], resolve);
+      });
+    });
+  },
   nh2: (ip) => {
     const url = argv.nh2_url || "http://127.0.0.1:5000/";
     return new Promise((resolve) => {
@@ -72,10 +87,6 @@ const services = {
       });
     });
   },
-  nhml: (ip) => {
-    let url = argv.nhml_url || "http://127.0.0.1:5001/";
-    return false;
-  }
 }
 
 function upsert(data, callback) {
