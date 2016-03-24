@@ -35,11 +35,6 @@ def processSample(sample):
     else:
       features.append(0)
 
-  # dnsbls
-  blacklists = data["dnsbl"]["blacklists"]
-  for key in blacklists:
-    features.append(int(blacklists[key]))
-
   return features
 
 def process():
