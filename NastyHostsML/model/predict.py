@@ -10,5 +10,5 @@ with open("model/model.pickle", "rb") as f:
 def predict(facade_data):
   features = fe.processSample(facade_data)
   X = np.array([features])
-  pred = clf.predict(X)
+  pred = clf.predict(X)[0].item()
   return pred
