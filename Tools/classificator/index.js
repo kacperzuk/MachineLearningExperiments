@@ -15,9 +15,11 @@ app.set('view engine', 'handlebars');
 
 app.get('/stats/?*', (req, res) => {
   pgclient.query("select bot, count(*) from adresy group by bot order by bot", (err, result) => {
+    var classified = 0;
     res.send(
       result.rows
         .map((v) => {
+          if(v.bot !== null) classified += v.count;
           if(v.bot === null)
             return `niesklasyfikowane: ${v.count}`;
           else if(v.bot === 1)
@@ -28,6 +30,7 @@ app.get('/stats/?*', (req, res) => {
             return `boty: ${v.count}`;
         })
         .join("; ")
+        + `; sklasyfikowane total: ${classified}`
     );
   });
 });
