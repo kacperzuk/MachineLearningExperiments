@@ -19,7 +19,7 @@ app.get('/stats/?*', (req, res) => {
     res.send(
       result.rows
         .map((v) => {
-          if(v.bot !== null) classified += v.count;
+          if(v.bot !== null) classified += parseInt(v.count);
           if(v.bot === null)
             return `niesklasyfikowane: ${v.count}`;
           else if(v.bot === 1)
