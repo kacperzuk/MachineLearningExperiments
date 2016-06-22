@@ -11,7 +11,8 @@ const scanners = {
   "revdns": 4000,
   "whois": 4001,
   "dnsbl": 4002,
-  "shodan": 4004
+  "shodan": 4004,
+  "asn": 4005
 };
 
 let hosts = [];
