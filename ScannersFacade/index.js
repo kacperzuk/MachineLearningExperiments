@@ -10,9 +10,13 @@ const hostsManager = url.parse(process.env.hostsManagerUrl || "http://127.0.0.1:
 const scanners = {
   "revdns": 4000,
   "whois": 4001,
+<<<<<<< HEAD
   "dnsbl": 4002,
   "shodan": 4004,
   "asn": 4005
+=======
+  "shodan": 4004
+>>>>>>> upstream/master
 };
 
 let hosts = [];

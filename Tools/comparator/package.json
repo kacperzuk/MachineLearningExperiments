@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "csv-stringify": "^0.0.8",
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "minimist": "^1.2.0",
