@@ -8,6 +8,7 @@
 4002 - DNSBL Scanner
 4003 - getipintel Scanner
 4004 - Shodan Scanner
+4005 - ASN Scanner
 
 5000 - nastyhosts2
 6000 - nastyhostsML
